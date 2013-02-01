@@ -9,7 +9,7 @@ def selectVertices( o ):
 	bpy.ops.mesh.select_all(action = 'DESELECT')
 	# everything is deselected -> to update python object, has to switch back to object mode
 	bpy.ops.object.mode_set(mode = 'OBJECT')
-	# now we can select
+	# now we can select the vertices
 	o.data.vertices[0].select = True
 	o.data.vertices[1].select = True
 	# and go back to edit mode to apply transformations
