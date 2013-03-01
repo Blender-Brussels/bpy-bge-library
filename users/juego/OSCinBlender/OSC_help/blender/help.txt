@@ -1,0 +1,37 @@
+All datas received with OSC
+
+
+Put this dictionary "gl.attribution" in init.py of OSC_work 
+gl.attribution = { 
+"n0_spam_back": 0,
+"n0_spam_forward": 0,
+"n1_egg_left": 0,
+"n1_egg_right": 0,
+"n2_egg_left": 0,
+"n2_egg_right": 0,
+}
+
+Type    ==>      Variable               Value 
+<class 'float'> ==> n2_egg_right = 0.3700787425041199 
+<class 'float'> ==> n2_egg_left = 0.3976377844810486 
+<class 'float'> ==> n1_egg_left = 0.25984251499176025 
+<class 'float'> ==> n0_spam_back = 0.16929133236408234 
+<class 'float'> ==> n0_spam_forward = 0.25196850299835205 
+<class 'float'> ==> n1_egg_right = -0.08267716318368912 
+
+
+All variable attribut of gl
+n2_egg_right = gl.n2_egg_right 
+n2_egg_left = gl.n2_egg_left 
+n1_egg_left = gl.n1_egg_left 
+n0_spam_back = gl.n0_spam_back 
+n0_spam_forward = gl.n0_spam_forward 
+n1_egg_right = gl.n1_egg_right 
+
+Variable    Median    Mini     Maxi
+n2_egg_right Median = 0.10629921406507492 Mini = 0.15748031437397003 Maxi = 0.3700787425041199 
+n2_egg_left Median = 0.1811023559421301 Mini = 0.035433072596788406 Maxi = 0.3976377844810486 
+n1_egg_left Median = 0.09448819607496262 Mini = 0.09842519462108612 Maxi = 0.28740158677101135 
+n0_spam_back Median = 0.24015748500823975 Mini = 0 Maxi = 0.4803149700164795 
+n0_spam_forward Median = 0.09645669907331467 Mini = 0.09055118262767792 Maxi = 0.28346458077430725 
+n1_egg_right Median = -0.0039370059967041016 Mini = -0.4606299102306366 Maxi = 0.4527558982372284 

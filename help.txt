@@ -1,0 +1,13 @@
+All datas received with OSC
+
+
+Put this dictionary "gl.attribution" in init.py of OSC_work 
+gl.attribution = { 
+}
+
+Type    ==>      Variable               Value 
+
+
+All variable attribut of gl
+
+Variable    Median    Mini     Maxi
