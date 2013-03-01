@@ -1,0 +1,80 @@
+#N canvas 80 84 609 783 12;
+#X declare -lib mrpeach;
+#X msg 190 178 disconnect;
+#X msg -20 180 connect localhost 12000;
+#X text 375 5 Receive example;
+#X obj -6 145 import mrpeach;
+#X obj 165 143 packOSC;
+#X obj 165 224 udpsend;
+#X obj 165 254 tgl 15 0 empty empty empty 8 -8 0 10 -4034 -1 -1 0 1
+;
+#X obj 382 45 udpreceive 11000;
+#X obj -10 290 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 3000 1;
+#X obj 175 289 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 3700 1;
+#X obj 351 189 cnv 15 200 40 empty empty empty 20 12 0 14 -4034 -66577
+0;
+#X obj 382 91 unpackOSC;
+#X obj 382 126 pipelist;
+#X obj 385 241 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 8890 1;
+#X text 74 6 Send example without bundles;
+#X obj 382 199 routeOSC /x;
+#X obj 382 163 routeOSC /blender /toto;
+#X msg 192 415 disconnect;
+#X obj 167 382 packOSC;
+#X obj 167 461 udpsend;
+#X obj 167 503 tgl 15 0 empty empty empty 8 -8 0 10 -4034 -1 -1 0 1
+;
+#X msg -18 384 connect localhost 13000;
+#X obj -5 49 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 6200 1;
+#X obj 173 48 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 3300 1;
+#X msg -8 85 send /spam/forward \$1;
+#X msg 170 84 send /spam/back \$1;
+#X msg 172 325 send /egg/right \$1;
+#X msg -14 326 send /egg/left \$1;
+#X obj -10 530 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 5700 1;
+#X obj 175 529 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 2100 1;
+#X msg 192 655 disconnect;
+#X obj 167 622 packOSC;
+#X obj 167 701 udpsend;
+#X obj 167 743 tgl 15 0 empty empty empty 8 -8 0 10 -4034 -1 -1 0 1
+;
+#X msg 172 565 send /egg/right \$1;
+#X msg -14 566 send /egg/left \$1;
+#X msg -18 624 connect localhost 14000;
+#X connect 0 0 5 0;
+#X connect 1 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 7 0 11 0;
+#X connect 8 0 27 0;
+#X connect 9 0 26 0;
+#X connect 11 0 12 0;
+#X connect 11 1 12 1;
+#X connect 12 0 16 0;
+#X connect 15 0 13 0;
+#X connect 16 0 15 0;
+#X connect 17 0 19 0;
+#X connect 18 0 19 0;
+#X connect 19 0 20 0;
+#X connect 21 0 19 0;
+#X connect 22 0 24 0;
+#X connect 23 0 25 0;
+#X connect 24 0 4 0;
+#X connect 25 0 4 0;
+#X connect 26 0 18 0;
+#X connect 27 0 18 0;
+#X connect 28 0 35 0;
+#X connect 29 0 34 0;
+#X connect 30 0 32 0;
+#X connect 31 0 32 0;
+#X connect 32 0 33 0;
+#X connect 34 0 31 0;
+#X connect 35 0 31 0;
+#X connect 36 0 32 0;

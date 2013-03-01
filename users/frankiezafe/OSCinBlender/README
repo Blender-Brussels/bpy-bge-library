@@ -1,0 +1,106 @@
+OSCinBlender
+
+ Copyright (C) Labomedia February 2012
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software Foundation,
+  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+        More at:
+        http://wiki.labomedia.org/index.php/Open_Sound_Control_:_OSC
+        and
+        http://labomedia.org/
+        or
+        http://openatelier.labomedia.org/
+
+Requirement:
+    - Only with Blender 2.5 / 2.6 and pyhton 3.2
+
+    The aim of this game is to get OSC data, and use it.
+    This help the developper to get datas name, set them very usefull.
+
+Two parts in this project :
+
+Part 1:
+
+    - Launch /OSCinBlender/OSC_help/blender OSC_help.blend
+
+    This game get OSC data received on IP and Port set in config.py
+    The only file to configure is config.py
+
+    help_osc.py get all data and write a file help.txt every 60 frames(1 second)
+
+    But you must received all OSC datas, so move in front of the kinect,
+    moved the wiimote, press all buttons, move in front of FaceOSC,
+    move your phone with TouchOSC, press the buttons,
+    use your pd patch,
+    enable all possibilities ....and have fun !
+
+    - /OSCinBlender/OSC_help/blender/help.txt
+    example:
+        All datas received with OSC
+
+        Put this dictionary "gl.attribution" in init.py of OSC_work
+        gl.attribution = {
+        "n0_spam_back": 0,
+        "n0_spam_forward": 0,
+        "n1_egg_left": 0,
+        "n1_egg_right": 0,
+        "n2_egg_left": 0,
+        "n2_egg_right": 0,
+        }
+
+        Type    ==>      Variable               Value
+        <class 'float'> ==> n2_egg_right = 0.3700787425041199
+        <class 'float'> ==> n2_egg_left = 0.3976377844810486
+        <class 'float'> ==> n1_egg_left = 0.25984251499176025
+        <class 'float'> ==> n0_spam_back = 0.16929133236408234
+        <class 'float'> ==> n0_spam_forward = 0.25196850299835205
+        <class 'float'> ==> n1_egg_right = -0.08267716318368912
+
+        All variable attribut of gl
+        n2_egg_right = gl.n2_egg_right
+        n2_egg_left = gl.n2_egg_left
+        n1_egg_left = gl.n1_egg_left
+        n0_spam_back = gl.n0_spam_back
+        n0_spam_forward = gl.n0_spam_forward
+        n1_egg_right = gl.n1_egg_right
+
+        Variable    Median    Mini     Maxi
+        n2_egg_right Median = 0.10629921406507492 Mini = 0.15748031437397003 Maxi = 0.3700787425041199
+        n2_egg_left Median = 0.1811023559421301 Mini = 0.035433072596788406 Maxi = 0.3976377844810486
+        n1_egg_left Median = 0.09448819607496262 Mini = 0.09842519462108612 Maxi = 0.28740158677101135
+        n0_spam_back Median = 0.24015748500823975 Mini = 0 Maxi = 0.4803149700164795
+        n0_spam_forward Median = 0.09645669907331467 Mini = 0.09055118262767792 Maxi = 0.28346458077430725
+        n1_egg_right Median = -0.0039370059967041016 Mini = -0.4606299102306366 Maxi = 0.4527558982372284
+
+
+    All Blender script are in /blender/lib
+
+    OSC is decode with OSC.py in /OSC
+
+    The directory pd hold a patch to send osc data to test : it is an example.
+
+    Variable name settings:
+        beginning with n0 or n1 or n2 is n+socket number
+        / or - or , are replace with _
+
+Part 2:
+    - Copy the directoy OSC_work, rename it, rename OSC_work.blend as desired
+    - Put the dictionary "gl.attribution" from help.txt to init.py of OSC_work
+    - Use the data in work_with_data.py
+
+
+TODO:
+    - Close socket
+    - If variable is a list, where isn't average, mini, maxi
