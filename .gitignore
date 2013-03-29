@@ -4,3 +4,7 @@
 *.blend1
 *.blend2
 
+# Do not track image files from user/juego/zoom
+users/juego/zoom/*.png
+users/juego/zoom/*.jpg
+users/juego/zoom/*.gif
