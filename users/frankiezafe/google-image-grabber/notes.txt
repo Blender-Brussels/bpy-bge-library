@@ -1,3 +1,5 @@
-#ref: https://developers.google.com/image-search/v1/jsondevguide#json_snippets_python
+#refs: 
+https://developers.google.com/image-search/v1/jsondevguide#json_snippets_python
 
+http://stackoverflow.com/questions/1048658/resize-images-in-directory
 
