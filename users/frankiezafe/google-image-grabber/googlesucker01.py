@@ -1,6 +1,7 @@
 import urllib2
 import simplejson
 import os
+import datetime
 
 # this script gets maximum 64 images per search string
 # adapts the searchreqs (search requests) and run
@@ -10,8 +11,10 @@ searchreqs = ['glitch art','glitch png','glitch color']
 restrit2png = True
 
 def downloadImg(url):
+
 	global imgCount
-	global tag
+	global currentreq
+	global googlelog
 	
 	prefix = ''
 	if ( imgCount < 10 ):
@@ -29,10 +32,14 @@ def downloadImg(url):
 			ext = '.gif'
 			
 	print imgCount, ' >> ', url
+	fname = currentreq.replace( ' ', '_' )
 	try: 
-		f = open( prefix + str(imgCount) + '_' + currentreq + ext, 'wb' )
+		f = open( prefix + str(imgCount) + '_' + fname + ext, 'wb' )
 		f.write(urllib2.urlopen(url).read())
 		f.close()
+		logline = prefix + str(imgCount) + '_' + fname + ext + ' >> ' + url + '\n'
+		googlelog.write( logline )
+		googlelog.flush()
 		imgCount += 1
 	except urllib2.HTTPError, err:
 		print 'Error in ', url, ' >> ', err
@@ -64,13 +71,22 @@ def googleApiImageRequest( start, string ):
 			for r in results['responseData']['results']:
 				downloadImg(r['url'])
 
+def timeStamped( fname, fmt='%Y-%m-%d-%H-%M-%S_{fname}' ):
+    return datetime.datetime.now().strftime(fmt).format(fname=fname)
+
 currentreq = ''
 imgCount = 0
+
+# creating a log file with the urls of the images + local filename
+googlelog = open(timeStamped('googlesucker_log.txt'),'w')
+
 for req in searchreqs:
 	i = 0
 	while i < 8:
 		i += 1
 		currentreq = req
 		googleApiImageRequest( i, req )
+
+googlelog.close()
 	
 
