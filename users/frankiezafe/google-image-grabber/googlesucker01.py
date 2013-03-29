@@ -6,7 +6,7 @@ import os
 # adapts the searchreqs (search requests) and run
 # images will be dumped in local folder
 
-searchreqs = ['microsoft logo','linux logo','mac logo']
+searchreqs = ['glitch art','glitch png','glitch color']
 restrit2png = True
 
 def downloadImg(url):
@@ -39,14 +39,14 @@ def downloadImg(url):
 	except urllib2.URLError, err:
 		print 'Error in ', url, ' >> ', err
 
-def googleApiImageRequest( label, string ):
+def googleApiImageRequest( start, string ):
 	
 	string = string.replace( ' ', '%20' )
 	url = ('https://ajax.googleapis.com/ajax/services/search/images?' +
        'v=1.0&' + 
        'q=' + string +
        '&userip=127.0.0.1' + 
-       '&start=' + str( label * 8 ) +
+       '&start=' + str( start * 8 ) +
        '&rsz=8' )
 
 	if restrit2png == True:
@@ -59,8 +59,10 @@ def googleApiImageRequest( label, string ):
 	results = simplejson.load(response)
 
 	# print results
-	for r in results['responseData']['results']:
-		downloadImg(r['url'])
+	if ( results['responseData'] ):
+		if ( results['responseData']['results'] ):	
+			for r in results['responseData']['results']:
+				downloadImg(r['url'])
 
 currentreq = ''
 imgCount = 0
