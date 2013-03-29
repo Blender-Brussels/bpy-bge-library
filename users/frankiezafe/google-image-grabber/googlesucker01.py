@@ -46,7 +46,7 @@ def googleApiImageRequest( label, string ):
        'v=1.0&' + 
        'q=' + string +
        '&userip=127.0.0.1' + 
-       '&label=' + str( label ) +
+       '&start=' + str( label * 8 ) +
        '&rsz=8' )
 
 	if restrit2png == True:
