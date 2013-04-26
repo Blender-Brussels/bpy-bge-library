@@ -27,11 +27,18 @@ def singleton(cls):
 class ProcessingBGE(object):
 	
 	def __init__(self):
+		# general
+		self.configured = False
 		self.verbose = False
 		self.framecount = 0
 		self.resources = 0
 		self.context = 0
-		self.configured = False
+		# mouse
+		self.mouseX = 0
+		self.mouseY = 0
+		self.mouseLeft = False
+		self.mouseMiddle = False
+		self.mouseRight = False
 	
 	def isconfigured( self ):
 		return self.configured
@@ -118,8 +125,8 @@ class ProcessingBGE(object):
 	#    2: transparent grey
 	#    3: opaque color
 	#    4: transparent color
-	def createColor( self, v1="NONE", v2="NONE", v3="NONE", v4="NONE" )
-		if v1 == "NONE"
+	def color( self, v1="NONE", v2="NONE", v3="NONE", v4="NONE" ):
+		if v1 == "NONE":
 			return self.rgba2vector( 0,0,0,255 )
 		else:
 			if v2 == "NONE":
@@ -137,18 +144,16 @@ class ProcessingBGE(object):
 ###############
 ####### getters
 ###############
-	
-	def getPosition( self, obj, absolute=True ):
-		if absolute:
-			return obj.worldPosition
-		else:
-			return obj.localPosition
 
-	def getOrientation( self, obj, absolute=True ):
-		if absolute:
-			return obj.worldOrientation
-		else:
-			return obj.localOrientation
+	def orientation( self, name, absolute=True ):
+		obj = self.getObjByName( name )
+		if obj is not 0:
+			return self.getOrientation( obj, absolute )
+
+	def position( self, name, absolute=True ):
+		obj = self.getObjByName( name )
+		if obj is not 0:
+			return self.getPosition( obj, absolute )
 
 
 ###############
@@ -227,21 +232,20 @@ class ProcessingBGE(object):
 
 ####### translations
 
-	def moveTo( self, target, source ):
-		obj1 = self.getObjByName( target )
-		obj2 = self.getObjByName( source )
-		if obj1 is not 0 and obj2 is not 0:
-			vt = self.getPosition( obj1 )			
-			vs = self.getPosition( obj2 )
-			vt.x = vs.x
-			vt.y = vs.y
-			vt.z = vs.z
-
-	def position( self, name, x=0, y=0, z=0, absolute=True ):
+	def moveTo( self, name, arg1, y="NONE", z="NONE" ):
 		obj = self.getObjByName( name )
-		if obj is not 0:
-			vecposition = self.getPosition( obj, absolute )
-			vecposition.x = x
+		if obj is not 0 and ( y == "NONE" or z == "NONE" ):
+			obj2 = self.getObjByName( arg1 )
+			if obj2 is not 0:
+				vt = self.getPosition( obj )			
+				vs = self.getPosition( obj2 )
+				vt.x = vs.x
+				vt.y = vs.y
+				vt.z = vs.z
+			return
+		elif obj is not 0:
+			vecposition = self.getPosition( obj )
+			vecposition.x = arg1
 			vecposition.y = y
 			vecposition.z = z
 
@@ -250,9 +254,8 @@ class ProcessingBGE(object):
 		if obj is not 0:
 			vecposition = self.getPosition( obj, absolute )
 			translation = mathutils.Vector( (x,y,z) )
-			if asbolute is True:
-				matorientation = self.getOrientation( obj, absolute )
-				# transforming translation with matrix
+			if not absolute:
+				translation.rotate( self.getOrientation( obj, absolute ) )
 			vecposition += translation
 
 	def moveX( self, name, value, absolute=True ):
@@ -275,10 +278,10 @@ class ProcessingBGE(object):
 
 ####### rotations
 
-#TODO
-	def orientation( self, name, neworientation  ):
+	def orient( self, name, neworientation  ):
 		obj = self.getObjByName( name )
 		if obj is not 0:
+			self.applyOrientation( obj, neworientation )
 			
 
 	def pointTo( self, name, tracked ):
@@ -290,7 +293,7 @@ class ProcessingBGE(object):
 #TODO
 			bge.render.drawLine( vec1, vec2, self.defaultLineColor )
 	
-	def point( self, name, x=0, y=0, z,0 ):
+	def point( self, name, x=0, y=0, z=0 ):
 		obj = self.getObjByName( name )
 		if obj is not 0:
 			matorientation = self.getOrientation( obj, absolute )
@@ -352,6 +355,18 @@ class ProcessingBGE(object):
 			obj.worldOrientation = matorientation
 		else:
 			obj.localOrientation = matorientation
+
+	def getPosition( self, obj, absolute=True ):
+		if absolute:
+			return obj.worldPosition
+		else:
+			return obj.localPosition
+
+	def getOrientation( self, obj, absolute=True ):
+		if absolute:
+			return obj.worldOrientation
+		else:
+			return obj.localOrientation
 
 	def getResourceByName( self, name ):
 		return self.resources.objects[name]
