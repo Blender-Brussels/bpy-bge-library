@@ -336,13 +336,37 @@ class ProcessingBGE(object):
 		obj = self.getObjByName( name )
 		if obj is not 0:
 			vecposition = self.getPosition( obj )
-			translation = mathutils.Vector( ( x - vecposition.x, y - vecposition.y, z - vecposition.z ) )
-			translation.normalize()
-			matorientation = mathutils.Matrix.Rotation( 0, 3, 'X')
-			matorientation *= mathutils.Matrix.Rotation( translation.x, 3, 'X' )
-			matorientation *= mathutils.Matrix.Rotation( translation.y, 3, 'Y' )
-			matorientation *= mathutils.Matrix.Rotation( translation.z, 3, 'Z' )
-			self.applyOrientation( obj, matorientation )
+			vectarget = mathutils.Vector( ( x,y,z ) )
+			vec = mathutils.Vector( ( x - vecposition.x, y - vecposition.y, z - vecposition.z ) )
+			vec.normalize()
+			# getting angles, via thierry ravet, my math master
+			theta = math.atan( math.sqrt( (vec.x * vec.x) + (vec.y * vec.y) ) / vec.z )
+			phi = math.atan( (vec.y * vec.y) / vec.x )
+			costheta = math.cos( theta )
+			sintheta = math.sin( theta )
+			cosphi = math.cos( phi )
+			sinphi = math.sin( phi )
+			mat = mathutils.Matrix()
+			# x line			
+			mat[0][0] = costheta * cosphi
+			mat[0][1] = -sinphi
+			mat[0][2] = sintheta * cosphi
+			# y line			
+			mat[1][0] = costheta * sinphi
+			mat[1][1] = cosphi
+			mat[1][2] = sintheta * sinphi
+			# z line			
+			mat[2][0] = -sintheta
+			mat[2][1] = 0
+			mat[2][2] = costheta
+			vec.x = 0
+			vec.y = 0
+			vec.z = 1
+			vec.rotate( mat )
+			self.applyOrientation( obj, vec )
+#TODO read doc of drawline, not clear how it is working...
+			# bge.render.drawLine( mathutils.Vector((0,0,0)), mathutils.Vector((5,5,5)), mathutils.Color((0.0, 0.0, 1.0)) )
+			
 
 	def rotateX( self, name, value, absolute=True ):
 		obj = self.getObjByName( name )
