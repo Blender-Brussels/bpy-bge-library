@@ -155,6 +155,13 @@ class ProcessingBGE(object):
 		if obj is not 0:
 			return self.getPosition( obj, absolute )
 
+#TODO
+	def dimension( self, name ):
+		obj = self.getObjByName( name )
+		if obj is not 0:
+			vecscale = self.getScale( obj )
+			
+
 
 ###############
 ####### setters
@@ -290,16 +297,19 @@ class ProcessingBGE(object):
 		if obj is not 0 and ot is not 0:
 			vec1 = self.getPosition( obj )
 			vec2 = self.getPosition( ot )
+			translation = mathutils.Vector( ( vec2.x - vec1.x, vec2.y - vec1.y, vec2.z - vec1.z ) )
 #TODO
-			bge.render.drawLine( vec1, vec2, self.defaultLineColor )
+			# bge.render.drawLine( vec1, vec2, self.defaultLineColor )
 	
 	def point( self, name, x=0, y=0, z=0 ):
 		obj = self.getObjByName( name )
 		if obj is not 0:
-			matorientation = self.getOrientation( obj, absolute )
+			vecposition = self.getPosition( obj )
+			translation = mathutils.Vector( ( x - vecposition.x, y - vecposition.y, z - vecposition.z ) )
 #TODO
+			# matorientation = mathutils.Matrix
 			# transform matrix to make it point to the 3D position
-			self.applyOrientation( obj, matorientation, absolute )
+			# self.applyOrientation( obj, matorientation )
 
 	def rotateX( self, name, value, absolute=True ):
 		obj = self.getObjByName( name )
