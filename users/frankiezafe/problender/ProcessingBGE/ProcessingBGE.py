@@ -298,20 +298,39 @@ class ProcessingBGE(object):
 			self.applyOrientation( obj, neworientation )
 			
 
-	def pointTo( self, name, tracked, axis='Z' ):
+	def pointTo( self, name, tracked ):
 		obj = self.getObjByName( name )
 		ot = self.getObjByName( tracked )
 		if obj is not 0 and ot is not 0:
-			vec1 = self.getPosition( obj )
-			vec2 = self.getPosition( ot )
-			vec = mathutils.Vector( ( vec2.x - vec1.x, vec2.y - vec1.y, vec2.z - vec1.z ) )
+			vec1 = self.getPosition( obj, True )
+			vec2 = self.getPosition( ot, True )
+			vec = mathutils.Vector( ( vec2.x - vec1.x, vec2.y - vec1.y, vec2.z - vec1.z ) )			
 			vec.normalize()
-			eul = mathutils.Euler(( vec.z, vec.y, vec.x ), 'ZYX')
-			# matorientation = mathutils.Matrix.Rotation( 0, 3, 'X')
-			# matorientation *= mathutils.Matrix.Rotation( vec.x, 3, 'X' )
-			# matorientation *= mathutils.Matrix.Rotation( vec.y, 3, 'Y' )
-			# matorientation *= mathutils.Matrix.Rotation( vec.z, 3, 'Z' )
-			self.applyOrientation( obj, eul.to_matrix() )
+			# getting angles, via thierry ravet, my math master
+			theta = math.atan( math.sqrt( (vec.x * vec.x) + (vec.y * vec.y) ) / vec.z )
+			phi = math.atan( (vec.y * vec.y) / vec.x )
+			costheta = math.cos( theta )
+			sintheta = math.sin( theta )
+			cosphi = math.cos( phi )
+			sinphi = math.sin( phi )
+			mat = mathutils.Matrix()
+			# x line			
+			mat[0][0] = costheta * cosphi
+			mat[0][1] = -sinphi
+			mat[0][2] = sintheta * cosphi
+			# y line			
+			mat[1][0] = costheta * sinphi
+			mat[1][1] = cosphi
+			mat[1][2] = sintheta * sinphi
+			# z line			
+			mat[2][0] = -sintheta
+			mat[2][1] = 0
+			mat[2][2] = costheta
+			vec.x = 0
+			vec.y = 0
+			vec.z = 1
+			vec.rotate( mat )
+			self.applyOrientation( obj, vec )
 	
 	def point( self, name, x=0, y=0, z=0 ):
 		obj = self.getObjByName( name )
