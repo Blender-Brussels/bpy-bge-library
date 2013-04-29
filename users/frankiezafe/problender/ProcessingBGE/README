@@ -19,8 +19,8 @@ You can specify the names of the scenes to use, by default "render" & "resources
 
 ** 2.
 You also have to link the keyboard and the mouse to a specific script of the library
-Mouse sensors must be linked to ProcessingBGE/ProcessingMouse.py.
-Keyboard sensors must be linked to ProcessingBGE/ProcessingKeyboard.py.
+Mouse sensors must be linked to ProcessingBGE/ProcessingMouse.py. At least one of the sensors must be called 'Mouse'
+Keyboard sensors must be linked to ProcessingBGE/ProcessingKeyboard.py. At least one of the sensors must be called 'Keyboard'
 
 ** 3.
 Last point: you'll have to call ProcessingBGE.configure() once, and ProcessingBGE.update() at each frame.
