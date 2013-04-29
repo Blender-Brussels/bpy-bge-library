@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+# developped with blessing of numediart.org & thierry dutoit
+# contributors:
+# juego@requiem4tv.com
+# thierry ravet
 # the bible: http://www.blender.org/documentation/blender_python_api_2_65_release/contents.html
 
 import sys
@@ -38,6 +42,10 @@ class ProcessingBGE(object):
 		self.mouseLeft = False
 		self.mouseMiddle = False
 		self.mouseRight = False
+		# commodities
+		self.PI = math.pi
+		self.HALF_PI = math.pi * 0.5
+		self.TWO_PI = math.pi * 2.0
 	
 	def isconfigured( self ):
 		return self.configured
@@ -290,25 +298,32 @@ class ProcessingBGE(object):
 			self.applyOrientation( obj, neworientation )
 			
 
-	def pointTo( self, name, tracked ):
+	def pointTo( self, name, tracked, axis='Z' ):
 		obj = self.getObjByName( name )
 		ot = self.getObjByName( tracked )
 		if obj is not 0 and ot is not 0:
 			vec1 = self.getPosition( obj )
 			vec2 = self.getPosition( ot )
-			translation = mathutils.Vector( ( vec2.x - vec1.x, vec2.y - vec1.y, vec2.z - vec1.z ) )
-#TODO
-			# bge.render.drawLine( vec1, vec2, self.defaultLineColor )
+			vec = mathutils.Vector( ( vec2.x - vec1.x, vec2.y - vec1.y, vec2.z - vec1.z ) )
+			vec.normalize()
+			eul = mathutils.Euler(( vec.z, vec.y, vec.x ), 'ZYX')
+			# matorientation = mathutils.Matrix.Rotation( 0, 3, 'X')
+			# matorientation *= mathutils.Matrix.Rotation( vec.x, 3, 'X' )
+			# matorientation *= mathutils.Matrix.Rotation( vec.y, 3, 'Y' )
+			# matorientation *= mathutils.Matrix.Rotation( vec.z, 3, 'Z' )
+			self.applyOrientation( obj, eul.to_matrix() )
 	
 	def point( self, name, x=0, y=0, z=0 ):
 		obj = self.getObjByName( name )
 		if obj is not 0:
 			vecposition = self.getPosition( obj )
 			translation = mathutils.Vector( ( x - vecposition.x, y - vecposition.y, z - vecposition.z ) )
-#TODO
-			# matorientation = mathutils.Matrix
-			# transform matrix to make it point to the 3D position
-			# self.applyOrientation( obj, matorientation )
+			translation.normalize()
+			matorientation = mathutils.Matrix.Rotation( 0, 3, 'X')
+			matorientation *= mathutils.Matrix.Rotation( translation.x, 3, 'X' )
+			matorientation *= mathutils.Matrix.Rotation( translation.y, 3, 'Y' )
+			matorientation *= mathutils.Matrix.Rotation( translation.z, 3, 'Z' )
+			self.applyOrientation( obj, matorientation )
 
 	def rotateX( self, name, value, absolute=True ):
 		obj = self.getObjByName( name )
