@@ -22,6 +22,10 @@ import math
 # tuto game engine
 # http://cgcookies.com/
 
+# import opengl lib
+import bgl
+import blf
+
 def singleton(cls):
  	return cls()
 
@@ -94,6 +98,10 @@ class ProcessingBGE(object):
 		# not working in texture mode, wait a bug fix
 		bge.render.disableMist()
 		
+		# loading default font
+		font_path = bge.logic.expandPath('//ProcessingBGE/resources/TitilliumWeb-Regular.ttf')
+		self.font_id = blf.load(font_path)
+
 		if ( self.verbose ):
 			print( "processing/blender inititalised" )
 			print( "ready to rock!" )
@@ -179,6 +187,25 @@ class ProcessingBGE(object):
 
 	def disableVerbose( self ):
 		self.verbose = False
+
+
+############
+####### text
+############
+
+	def text( self, text ):
+		if self.configured is True:
+			width = bge.render.getWindowWidth()
+			height = bge.render.getWindowHeight()
+			bgl.glMatrixMode(bgl.GL_PROJECTION)
+			bgl.glLoadIdentity()
+			bgl.gluOrtho2D(0, width, 0, height)
+			bgl.glMatrixMode(bgl.GL_MODELVIEW)
+			bgl.glLoadIdentity()
+			font_id = self.font_id
+			blf.position( font_id, 20, 20, 0)
+			blf.size( font_id, 300, 300)
+			blf.draw( font_id, "Hello World")
 
 
 ##############
