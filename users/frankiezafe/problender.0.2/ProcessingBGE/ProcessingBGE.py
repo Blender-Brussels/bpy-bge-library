@@ -78,7 +78,7 @@ class ProcessingBGE(object):
 		self.locateTemplates()
 
 		self.configured = True
-		self.defaultLineColor = self.rgb2vector( 255,0,0 )
+		self.lcolor = self.rgb2vector( 255,0,0 )
 
 		# setting default values in bge.render
 		self.background( 255,255,255 )
@@ -209,6 +209,20 @@ class ProcessingBGE(object):
 						return self.rgba2vector( v1,v2,v3 )
 					else:
 						return self.rgba2vector( v1,v2,v3,v4 )
+
+	
+	def getColor( self, o ):
+		if type( o ) is str:
+			obj = self.getObjByName( o )
+			if obj is not 0:
+				return obj.color * 255
+			else:	
+				return self.color() * 255
+		elif type( o ) is bge.types.KX_GameObject:
+			return o.color * 255
+		else:
+			return self.color() * 255
+			
 			
 
 ###############
@@ -254,7 +268,17 @@ class ProcessingBGE(object):
 
 	def disableVerbose( self ):
 		self.verbose = False
+			
 
+#################
+####### delegates
+#################
+
+	def vector( self, x = "NONE", y = "NONE", z = "NONE" ):
+		if x != "NONE" and y != "NONE" and z != "NONE":
+			return mathutils.Vector( ( x,y,z ) )
+		else:
+			return mathutils.Vector()
 
 ############
 ####### text
@@ -274,6 +298,63 @@ class ProcessingBGE(object):
 			blf.size( font_id, 300, 300)
 			blf.draw( font_id, "Hello World")
 
+
+############
+####### text
+############
+
+	def lineColor( self, arg1, arg2 = "NONE", arg3 = "NONE" ):
+
+		r = arg1
+		g = 0
+		b = 0
+		if type( arg1 ) is mathutils.Color:
+			self.lcolor = self.rgb2vector( arg1.r, arg1.v, arg1.b )
+			return
+		elif type( arg1 ) is mathutils.Vector:
+			self.lcolor = self.rgb2vector( arg1.x, arg1.y, arg1.z )
+			return
+		elif type( arg2 ) is not "NONE" and arg3 is not "NONE":
+			g = arg2
+			b = arg3
+		self.lcolor = self.rgb2vector( r,g,b )
+
+	def line( self, arg1, arg2 = "NONE", arg3 = "NONE", arg4 = "NONE", arg5 = "NONE", arg6 = "NONE" ):
+
+		v1 = "NONE"
+		v2 = "NONE"
+
+		if type( arg1 ) is mathutils.Vector:
+			v1 = arg1
+		elif type( arg1 ) is str:
+			o = self.getObjByName( arg1 )
+			if o is not 0:
+				v1 = self.getPosition( o )
+		elif type( arg1 ) is bge.types.KX_GameObject:
+			v1 = self.getPosition( arg1 )
+		
+		if v1 == "NONE":
+			if ( type( arg1 ) is float or type( arg1 ) is int ) and ( type( arg2 ) is float or type( arg2 ) is int ) and ( type( arg3 ) is float or type( arg3 ) is int ):
+				v1 = mathutils.Vector( ( arg1,arg2,arg3 ) )
+			else:
+				return
+
+		if type( arg2 ) is mathutils.Vector:
+			v2 = arg2
+		elif type( arg2 ) is str:
+			o = self.getObjByName( arg2 )
+			if o is not 0:
+				v2 = self.getPosition( o )
+		elif type( arg2 ) is bge.types.KX_GameObject:
+			v2 = self.getPosition( arg2 )
+
+		if v1 != "NONE" and v2 == "NONE":
+			if ( type( arg2 ) is float or type( arg2 ) is int ) and ( type( arg3 ) is float or type( arg4 ) is int ) and ( type( arg4 ) is float or type( arg4 ) is int ):
+				v2 = mathutils.Vector( ( arg2,arg3,arg4 ) )
+			else:
+				v2 = mathutils.Vector( ( 0,0,0 ) )
+		
+		bge.render.drawLine( v1, v2, self.lcolor )
 
 ##############
 ####### colors
