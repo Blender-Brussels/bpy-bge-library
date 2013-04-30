@@ -1,0 +1,34 @@
+29/04/2013 - 21:52
+**
+to be able to duplicate objects, objects should be linked to an edit object actuator
+to clenup everything, a root object should be placed at 0,0,0 and use as ref when duplicating
++ template objects should be placed in an hidden layer (the second one, for instance)
++ all sensors/controllers/actuators linked to root, and not camera
+...
+a lot of refactoring is to be done!
+http://blenderartists.org/forum/archive/index.php/t-200133.html
+
+'''
+import bge
+scene = bge.logic.getCurrentScene()
+#bge.logic.getCurrentController().owner
+ob = scene.objects['root']
+ob1 = scene.addObject("Cylinder", ob)
+ob2 = scene.addObject("Cylinder", ob)
+vec = ob1.worldPosition
+vec.x += 1
+print(ob1, ob2)
+'''
+
+**
+there is a way to register a method to be called at each frame!
+'''
+scene = logic.getCurrentScene()
+scene.post_draw = [write]
+'''
+to be done once!
+this means: the setup is done by grabbing an error:
+'''
+scene = logic.getCurrentScene()
+scene.post_draw = [write]
+'''
