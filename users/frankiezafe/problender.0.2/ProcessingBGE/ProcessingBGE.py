@@ -17,6 +17,8 @@ import math
 #TODO's
 # implement rasterizer!!! http://www.blender.org/documentation/blender_python_api_2_65_5/bge.render.html
 # investigate http://blenderartists.org/forum/showthread.php?276746-Trying-to-fix-BGE-bug-27322-bge-render-bugs-Mist-Ambient-and-Mode-sets&highlight= for ambient and mist bug in bge
+# investigate http://www.yofrankie.org/tag/bge/
+# investigate http://solarlune-gameup.blogspot.be/2011/01/opengl-2d-screen-filters-in-bge-part-1.html (shaders)
 
 # resources for singleton class
 # http://code.activestate.com/recipes/52558/
@@ -42,12 +44,18 @@ class ProcessingBGE(object):
 		self.framecount = 0
 		self.resources = 0
 		self.scene = 0
+		# view
+		self.view_orientation = 0
 		# mouse
 		self.mouseX = 0
 		self.mouseY = 0
 		self.mouseLeft = False
 		self.mouseMiddle = False
 		self.mouseRight = False
+		# keyboard
+		self.keydown = {}
+		self.keyactive = {}
+		self.keyup = {}
 		# commodities
 		self.PI = math.pi
 		self.HALF_PI = math.pi * 0.5
@@ -88,7 +96,7 @@ class ProcessingBGE(object):
 		
 		# loading default font
 		font_path = bge.logic.expandPath('//ProcessingBGE/resources/TitilliumWeb-Regular.ttf')
-		self.font_id = blf.load(font_path)
+		self.font = blf.load(font_path)
 
 		if ( self.verbose ):
 			print( "processing/blender inititalised" )
@@ -158,6 +166,7 @@ class ProcessingBGE(object):
 			print( "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nThere is a huge problem in the init script!\nCall 'configure()' to start correctly ProcessingBlender\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" )
 			return False
 		self.framecount += 1
+		self.view_orientation = bge.logic.getCurrentScene().active_camera.modelview_matrix
 
 
 ################
@@ -284,24 +293,56 @@ class ProcessingBGE(object):
 ####### text
 ############
 
-	def text( self, text ):
-		if self.configured is True:
+	def text( self, text, arg1=0, y=0, z=0 ):
+		if self.configured is True and self.view_orientation is not 0:
+			
+			x = arg1
+			if type( arg1 ) is mathutils.Vector():
+				x = arg1.x
+				y = arg1.y
+				z = arg1.z
+			elif type( arg1 ) is bge.types.KX_GameObject:
+				o = self.getPosition( arg1 )
+				x = o.x
+				y = o.y
+				z = o.z
+
 			width = bge.render.getWindowWidth()
 			height = bge.render.getWindowHeight()
-			bgl.glMatrixMode(bgl.GL_PROJECTION)
-			bgl.glLoadIdentity()
-			bgl.gluOrtho2D(0, width, 0, height)
-			bgl.glMatrixMode(bgl.GL_MODELVIEW)
-			bgl.glLoadIdentity()
-			font_id = self.font_id
-			blf.position( font_id, 20, 20, 0)
-			blf.size( font_id, 300, 300)
-			blf.draw( font_id, "Hello World")
+
+			ratiow = 1./width
+			ratioh = 1./height
+			ratios = mathutils.Vector( ( self.view_orientation[0][3], self.view_orientation[1][3], self.view_orientation[2][3] ) ).length
+			bgl.glPushMatrix()
+			bgl.glTranslatef( x,y,z )
+			buf = bgl.Buffer( bgl.GL_FLOAT, [16] )
+			buf[0] = self.view_orientation[0][0]
+			buf[1] = self.view_orientation[0][1]
+			buf[2] = self.view_orientation[0][2]
+			buf[3] = 0
+			buf[4] = self.view_orientation[1][0]
+			buf[5] = self.view_orientation[1][1]
+			buf[6] = self.view_orientation[1][2]
+			buf[7] = 0
+			buf[8] = self.view_orientation[2][0]
+			buf[9] = self.view_orientation[2][1]
+			buf[10] = self.view_orientation[2][2]
+			buf[11] = 0
+			buf[12] = 0
+			buf[13] = 0
+			buf[14] = 0
+			buf[15] = 1
+			bgl.glMultMatrixf( buf )
+			bgl.glScalef( ratiow, ratioh, 0 )
+			blf.position( self.font, 0,0,0 )
+			blf.size( self.font, 50, 300 )
+			blf.draw( self.font, text )
+			bgl.glPopMatrix()
 
 
-############
-####### text
-############
+##################
+####### basic draw
+##################
 
 	def lineColor( self, arg1, arg2 = "NONE", arg3 = "NONE" ):
 

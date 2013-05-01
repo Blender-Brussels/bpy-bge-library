@@ -3,7 +3,7 @@ from ProcessingBGE.ProcessingBGE import ProcessingBGE as pbge
 if pbge.isconfigured():
 	co = bge.logic.getCurrentController()
 	mouse = co.sensors["Mouse"]
-	
+
 	# position	
 	pbge.mouseX = mouse.position[0] / bge.render.getWindowWidth()
 	pbge.mouseY = mouse.position[1] / bge.render.getWindowHeight()
