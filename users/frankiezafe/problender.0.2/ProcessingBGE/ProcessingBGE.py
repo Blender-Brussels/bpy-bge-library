@@ -17,7 +17,7 @@ import math
 #TODO's
 # implement rasterizer!!! http://www.blender.org/documentation/blender_python_api_2_65_5/bge.render.html
 # investigate http://blenderartists.org/forum/showthread.php?276746-Trying-to-fix-BGE-bug-27322-bge-render-bugs-Mist-Ambient-and-Mode-sets&highlight= for ambient and mist bug in bge
-# investigate http://www.yofrankie.org/tag/bge/
+# investigate http://www.yofrankie.org/tag/bge/ ( https://svn.blender.org/svnroot/yofrankie/trunk/ )
 # investigate http://solarlune-gameup.blogspot.be/2011/01/opengl-2d-screen-filters-in-bge-part-1.html (shaders)
 
 # resources for singleton class
@@ -129,7 +129,7 @@ class ProcessingBGE(object):
 					self.templates[oname] = a.object					
 
 		if self.verbose:
-			print( "Templates object status:" )
+			print( "Template objects status:" )
 			if self.template_cube is 0:
 				print( "\tCan not locate 'template_cube' object" )
 			else:
