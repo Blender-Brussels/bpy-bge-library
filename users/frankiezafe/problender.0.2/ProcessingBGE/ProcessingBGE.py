@@ -9,10 +9,17 @@
 # the bible: http://www.blender.org/documentation/blender_python_api_2_65_release/contents.html
 
 import sys
-import bge
-import random
-import mathutils
 import math
+import random
+
+# blender libs
+import bge
+import mathutils
+import bgl
+import blf
+
+# external libs
+import ProcessingBGE.OSC as lib_osc
 
 #TODO's
 # implement rasterizer!!! http://www.blender.org/documentation/blender_python_api_2_65_5/bge.render.html
@@ -26,13 +33,9 @@ import math
 # tuto game engine
 # http://cgcookies.com/
 
-# import opengl lib
-import bgl
-import blf
 
 def singleton(cls):
  	return cls()
-
 
 @singleton
 class ProcessingBGE(object):
@@ -56,6 +59,9 @@ class ProcessingBGE(object):
 		self.keydown = {}
 		self.keyactive = {}
 		self.keyup = {}
+		# OSC
+		self.osc_clients = {}
+		self.osc_servers = {}
 		# commodities
 		self.PI = math.pi
 		self.HALF_PI = math.pi * 0.5
