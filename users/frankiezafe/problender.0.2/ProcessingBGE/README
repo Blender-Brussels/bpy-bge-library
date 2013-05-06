@@ -12,15 +12,15 @@ To start a new "problender" project, just copy/paste the folder "problender" and
 If you don't want to use the problender template, the setup is a bit more complex.
 
 ** 1.
-ProcessigBGE requires two scenes: an render scene, used for display, and a resource scene, used to store template objects.
-When you call "configure" method, the object will search for the 2 scenes.
-If they are not there, the ProcessingBGE will never consider itself as "configured".
-You can specify the names of the scenes to use, by default "render" & "resources".
+ProcessigBGE requires one scenes and two layers: an active layer and a "storage" layer
+When you call "configure" method, template object will be loaded from the storage layer via "Edit object" actuators
+You can add custom templates via the same process, the method to ducplicate them is(will) createFrom( [object name] ) 
 
 ** 2.
-You also have to link the keyboard and the mouse to a specific script of the library
-Mouse sensors must be linked to ProcessingBGE/ProcessingMouse.py. At least one of the sensors must be called 'Mouse'
-Keyboard sensors must be linked to ProcessingBGE/ProcessingKeyboard.py. At least one of the sensors must be called 'Keyboard'
-
-** 3.
 Last point: you'll have to call ProcessingBGE.configure() once, and ProcessingBGE.update() at each frame.
+
+
+
+
+06 May 2013
+Version 0.2
