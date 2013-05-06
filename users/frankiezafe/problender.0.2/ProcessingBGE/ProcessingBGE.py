@@ -48,17 +48,24 @@ class ProcessingBGE(object):
 		self.resources = 0
 		self.scene = 0
 		# view
+		self.width = 0
+		self.height = 0
 		self.view_orientation = 0
 		# mouse
+		self.input_mouse = bge.logic.mouse
+		self.input_mouse.visible = True
 		self.mouseX = 0
 		self.mouseY = 0
 		self.mouseLeft = False
 		self.mouseMiddle = False
 		self.mouseRight = False
 		# keyboard
-		self.keydown = {}
-		self.keyactive = {}
-		self.keyup = {}
+		self.input_keyboard = bge.logic.keyboard
+		# keyboard events are not triggered fast enough: just_pressed and just_released are missed by this way to process them
+		# a comparaison is made on update to fix that	
+		self.input_keyboardEvents = {}
+		for key in self.input_keyboard.events.keys():
+			self.input_keyboardEvents[key] = self.input_keyboard.events[key]
 		# OSC
 		self.osc_clients = {}
 		self.osc_servers = {}
@@ -171,9 +178,53 @@ class ProcessingBGE(object):
 		if self.configured == False:
 			print( "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nThere is a huge problem in the init script!\nCall 'configure()' to start correctly ProcessingBlender\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" )
 			return False
+		# update width and height size
+		self.width = bge.render.getWindowWidth()
+		self.height = bge.render.getWindowHeight()
+		# update keyboard and mouse
+		self.inputs()
 		self.framecount += 1
 		self.view_orientation = bge.logic.getCurrentScene().active_camera.modelview_matrix
 
+
+##############
+####### inputs
+##############
+	
+	# called by update, no need to make an explicit call
+	def inputs( self ):
+		
+		# comparing keyboard events to local copy
+		for key in self.input_keyboard.events.keys():
+			if self.input_keyboard.events[key] != self.input_keyboardEvents[key]:
+				if self.input_keyboard.events[key] == bge.logic.KX_INPUT_ACTIVE and self.input_keyboardEvents[key] == bge.logic.KX_INPUT_NONE:
+					self.input_keyboardEvents[key] = bge.logic.KX_INPUT_JUST_ACTIVATED
+				elif self.input_keyboard.events[key] == bge.logic.KX_INPUT_NONE and ( self.input_keyboardEvents[key] == bge.logic.KX_INPUT_JUST_ACTIVATED or self.input_keyboardEvents[key] == bge.logic.KX_INPUT_ACTIVE ):
+					self.input_keyboardEvents[key] = bge.logic.KX_INPUT_JUST_RELEASED
+				else:
+					self.input_keyboardEvents[key] = self.input_keyboard.events[key]
+
+		# relative position of the mouse ( viewport )
+		self.mouseX = self.input_mouse.position[0]
+		self.mouseY = self.input_mouse.position[1]
+#TODO
+# buttons requires a SCA_MouseSensor! -> should be done before, @ instanciation or configuration
+
+	def keyPressed( self, char ):
+		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_JUST_ACTIVATED :
+			return True
+		return False
+
+	def keyReleased( self, char ):
+		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_JUST_RELEASED :
+			return True
+		return False
+
+	def keyActive( self, char ):
+		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_ACTIVE :
+			return True
+		return False
+		
 
 ################
 ####### creators
@@ -283,7 +334,12 @@ class ProcessingBGE(object):
 
 	def disableVerbose( self ):
 		self.verbose = False
-			
+
+	def showMouse( self ):
+		self.input_mouse.visible = True
+
+	def hideMouse( self ):
+		self.input_mouse.visible = False			
 
 #################
 ####### delegates
