@@ -209,22 +209,56 @@ class ProcessingBGE(object):
 		self.mouseY = self.input_mouse.position[1]
 #TODO
 # buttons requires a SCA_MouseSensor! -> should be done before, @ instanciation or configuration
+		return True
 
+	
+	# methods to be used by users
+	# return true or false depending on the characters given
+	# can be used with ascii value of the key or a char
 	def keyPressed( self, char ):
+		caps = self.capsActive()
+		if caps and self.isLowercase( char ):
+			return False
+		elif caps:
+			char = self.char2lowercase( char )
+		char_ascii = self.char2ascii( char )
+		if char_ascii == -1:
+			return False
 		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_JUST_ACTIVATED :
 			return True
 		return False
+		
 
 	def keyReleased( self, char ):
+		caps = self.capsActive()
+		if caps and self.isLowercase( char ):
+			return False
+		elif caps:
+			char = self.char2lowercase( char )
+		char_ascii = self.char2ascii( char )
+		if char_ascii == -1:
+			return False
 		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_JUST_RELEASED :
 			return True
 		return False
 
 	def keyActive( self, char ):
+		caps = self.capsActive()
+		if caps and self.isLowercase( char ):
+			return False
+		elif caps:
+			char = self.char2lowercase( char )
+		char_ascii = self.char2ascii( char )
+		if char_ascii == -1:
+			return False
 		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_ACTIVE :
 			return True
 		return False
-		
+
+	def capsActive( self ): 
+		if self.input_keyboardEvents[124] == bge.logic.KX_INPUT_ACTIVE or self.input_keyboardEvents[124] == bge.logic.KX_INPUT_JUST_ACTIVATED:
+			return True
+		return False
 
 ################
 ####### creators
@@ -739,6 +773,30 @@ class ProcessingBGE(object):
 #############
 ####### utils
 #############
+
+	def isLowercase( self, char ):
+		if type( char ) is str:
+#TODO: test that char is lowercase!!!!
+			if len( char ) == 0 :
+				return True
+			else:
+				return False
+		else:
+			return True
+
+	def char2lowercase( self, char ):
+		if type( char ) is str and len( char ) == 1:
+#TODO: transform char to lowercase!!!!
+			char = char
+		return char
+
+	def char2ascii( self, char ):
+		if type( char ) is str and len( char ) == 1:
+			return ord( char )
+		elif type( char ) is int:
+			return char
+		else:
+			return -1
 
 	def rgba2vector( self, r=255, g=255, b=255, a=255 ):
 		r = self.prepareColor( r )

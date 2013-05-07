@@ -1,3 +1,10 @@
+07/05/2013 - 10:42
+**
+to investigate this https://code.google.com/p/pyo/
+"pyo is a Python module written in C to help digital signal processing script creation."
+would enable audio generation in the heart of the game engine!
+on linux, it is available trough synaptic -> python-pyo
+
 29/04/2013 - 21:52
 **
 to be able to duplicate objects, objects should be linked to an edit object actuator
