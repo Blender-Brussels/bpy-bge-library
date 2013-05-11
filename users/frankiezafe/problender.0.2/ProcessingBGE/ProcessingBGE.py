@@ -1054,8 +1054,14 @@ class ProcessingBGE(object):
 	def getObjectByName( self, name ):
 		obj = 0
 		try:
-			obj = self.scene.objects[ name ]
+			obj = self.generatedObjects[ name ]
 		except KeyError:
 			obj = 0
+		if obj is 0:
+			try:
+				obj = self.scene.objects[ name ]
+			except KeyError:
+				obj = 0
+			
 		return obj
 		
