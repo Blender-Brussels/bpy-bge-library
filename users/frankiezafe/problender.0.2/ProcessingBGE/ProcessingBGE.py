@@ -73,6 +73,10 @@ class ProcessingBGE(object):
 		self.PI = math.pi
 		self.HALF_PI = math.pi * 0.5
 		self.TWO_PI = math.pi * 2.0
+		self.ARROW_UP = 	bge.events.UPARROWKEY
+		self.ARROW_RIGHT = 	bge.events.RIGHTARROWKEY
+		self.ARROW_DOWN = 	bge.events.DOWNARROWKEY
+		self.ARROW_LEFT = 	bge.events.LEFTARROWKEY
 	
 	def isconfigured( self ):
 		return self.configured
@@ -224,7 +228,7 @@ class ProcessingBGE(object):
 		char_ascii = self.char2ascii( char )
 		if char_ascii == -1:
 			return False
-		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_JUST_ACTIVATED :
+		if self.input_keyboardEvents[ char_ascii ] == bge.logic.KX_INPUT_JUST_ACTIVATED :
 			return True
 		return False
 		
@@ -238,7 +242,7 @@ class ProcessingBGE(object):
 		char_ascii = self.char2ascii( char )
 		if char_ascii == -1:
 			return False
-		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_JUST_RELEASED :
+		if self.input_keyboardEvents[ char_ascii ] == bge.logic.KX_INPUT_JUST_RELEASED :
 			return True
 		return False
 
@@ -251,7 +255,7 @@ class ProcessingBGE(object):
 		char_ascii = self.char2ascii( char )
 		if char_ascii == -1:
 			return False
-		if self.input_keyboardEvents[ ord( char ) ] == bge.logic.KX_INPUT_ACTIVE :
+		if self.input_keyboardEvents[ char_ascii ] == bge.logic.KX_INPUT_ACTIVE :
 			return True
 		return False
 
@@ -285,6 +289,66 @@ class ProcessingBGE(object):
 		self.move( obj, x,y,z )
 		if self.verbose:
 			print( "New cube successfully created." )
+		return obj
+
+
+	def createSphere( self, x=0, y=0, z=0, time2live=0 ):
+		if self.template_sphere is 0:
+			if self.verbose:
+				print( "No sphere template available." )
+			return 0
+		obj = self.scene.addObject( self.template_sphere, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New sphere successfully created." )
+		return obj
+
+
+	def createEmpty( self, x=0, y=0, z=0, time2live=0 ):
+		if self.template_empty is 0:
+			if self.verbose:
+				print( "No empty template available." )
+			return 0
+		obj = self.scene.addObject( self.template_empty, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New empty successfully created." )
+		return obj
+
+	def createSpot( self, x=0, y=0, z=0, time2live=0 ):
+		if self.template_spot is 0:
+			if self.verbose:
+				print( "No spot template available." )
+			return 0
+		obj = self.scene.addObject( self.template_spot, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New spot successfully created." )
+		return obj
+
+	def createCylinder( self, x=0, y=0, z=0, time2live=0 ):
+		if self.template_cylinder is 0:
+			if self.verbose:
+				print( "No cylinder template available." )
+			return 0
+		obj = self.scene.addObject( self.template_cylinder, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New cylinder successfully created." )
+		return obj
+
+	def createFromTemplate( self, name, x=0, y=0, z=0, time2live=0 ):
+		tmpl = 0		
+		try:
+			tmpl = self.templates[ name ]
+		except KeyError:
+			if self.verbose:
+				print( "There is no", name, "in custom templates" )
+			return 0
+		obj = self.scene.addObject( tmpl, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New", name,"successfully created." )
 		return obj
 
 	# convenient way to create colors, always return a RGBA color (a veector with 4 positions)
