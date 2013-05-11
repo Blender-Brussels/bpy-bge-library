@@ -103,7 +103,11 @@ class ProcessingBGE(object):
 		self.locateTemplates()
 
 		self.configured = True
+
+		# lines and text colors
 		self.lcolor = self.rgb2vector( 255,0,0 )
+		self.tcolor = self.rgb2vector( 255,255,255 )
+		self.tsize = 50
 
 		# setting default values in bge.render
 		self.background( 255,255,255 )
@@ -453,7 +457,99 @@ class ProcessingBGE(object):
 ####### text
 ############
 
-	def text( self, text, arg1=0, y=0, z=0 ):
+	def textColor( self, arg1, arg2 = "NONE", arg3 = "NONE" ):
+
+		r = arg1
+		g = 0
+		b = 0
+		if type( arg1 ) is mathutils.Color:
+			self.lcolor = self.rgb2vector( arg1.r, arg1.v, arg1.b )
+			return
+		elif type( arg1 ) is mathutils.Vector:
+			self.lcolor = self.rgb2vector( arg1.x, arg1.y, arg1.z )
+			return
+		elif type( arg2 ) is not "NONE" and arg3 is not "NONE":
+			g = arg2
+			b = arg3
+		self.tcolor = self.rgb2vector( r,g,b )
+
+	def textSize( self, size ):
+		self.tsize = size
+
+	# arguments:
+	# simple:
+	# -	3 floats or 3 int
+	# advanced:
+	# -	if arg1 is a vector, it'll be used as a translation vector
+	#	+ if arg2 is a vector also, it'll be used as rotation vector
+	# -	if arg1 is an object or a string, the object position will
+	#	be used as translation
+	#	+ if arg2 is a vector, it'll be used as a translation vector
+	#	+ if arg3 is a vector also, it'll be used as rotation vector
+	# by default, text will be placed @ root
+	def text( self, text, arg1=0, arg2=0, arg3=0 ):
+		x = 0
+		y = 0
+		z = 0
+		rx = 0
+		ry = 0
+		rz = 0
+
+		if type( arg1 ) is mathutils.Vector():
+			x = arg1.x
+			y = arg1.y
+			z = arg1.z
+			if type( arg2 ) is mathutils.Vector():
+				rx = arg2.x
+				ry = arg2.y
+				rz = arg2.z
+
+		elif type( arg1 ) is bge.types.KX_GameObject or type( arg1 ) is str:
+			if type( arg1 ) is str:
+				arg1 = self.getObjByName( arg1 )
+			if arg1 is not 0:
+				o = self.getPosition( arg1 )
+				x = o.x
+				y = o.y
+				z = o.z
+				# translation vector
+				if type( arg2 ) is mathutils.Vector():
+					x += arg2.x
+					y += arg2.y
+					z += arg2.z
+				# rotation vector
+				if type( arg3 ) is mathutils.Vector():
+					rx = arg3.x
+					ry = arg3.y
+					rz = arg3.z
+		
+		elif type( arg1 ) is float and type( arg2 ) is float and type( arg3 ) is float:
+			x = arg1
+			y = arg2
+			z = arg3
+
+		elif type( arg1 ) is int and type( arg2 ) is int and type( arg3 ) is int:
+			x = arg1
+			y = arg2
+			z = arg3
+		
+		width = bge.render.getWindowWidth()
+		height = bge.render.getWindowHeight()
+		ratiow = 1./width
+		ratioh = 1./height
+		bgl.glPushMatrix()
+		bgl.glTranslatef( x,y,z )
+#TODO transform angles to matrix!
+		# bgl.glRotate( rx,ry,rz )
+		bgl.glScalef( ratiow, ratioh, 0 )
+		blf.position( self.font, 0,0,0 )
+		blf.size( self.font, self.tsize, 300 )
+		bgl.glColor3f( self.tcolor.x, self.tcolor.y, self.tcolor.z )
+		blf.draw( self.font, text )
+		bgl.glPopMatrix()
+		
+
+	def info( self, text, arg1=0, y=0, z=0 ):
 		if self.configured is True and self.view_orientation is not 0:
 			
 			x = arg1
@@ -495,7 +591,8 @@ class ProcessingBGE(object):
 			bgl.glMultMatrixf( buf )
 			bgl.glScalef( ratiow, ratioh, 0 )
 			blf.position( self.font, 0,0,0 )
-			blf.size( self.font, 50, 300 )
+			blf.size( self.font, self.tsize, 300 )
+			bgl.glColor3f( self.tcolor.x, self.tcolor.y, self.tcolor.z )
 			blf.draw( self.font, text )
 			bgl.glPopMatrix()
 
