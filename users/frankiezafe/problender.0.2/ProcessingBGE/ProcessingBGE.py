@@ -45,7 +45,6 @@ class ProcessingBGE(object):
 		self.configured = False
 		self.verbose = False
 		self.framecount = 0
-		self.resources = 0
 		self.scene = 0
 		# view
 		self.width = 0
@@ -100,6 +99,7 @@ class ProcessingBGE(object):
 		self.template_sphere = 0
 		self.template_spot = 0
 		self.templates = {}
+		self.generatedObjects = {}
 		self.locateTemplates()
 
 		self.configured = True
@@ -272,6 +272,33 @@ class ProcessingBGE(object):
 ####### creators
 ################
 
+	def makeUnique( self, name ):
+		increment = 0
+		tmpname = 0
+		unique = False
+		while( unique is False and increment < 10000 ):
+			if increment < 10:
+				tmpname = name+".000"
+			elif increment < 100:
+				tmpname = name+".00"
+			elif increment < 1000:
+				tmpname = name+".0"
+			tmpname += str( increment )
+			if self.getGeneratedByName( tmpname ) is 0 and self.getObjectByName( tmpname ) is 0:
+				return tmpname
+			increment += 1
+		return 0
+			
+			
+
+	def storeGeneratedRef( self, o ):
+		uniqueName = self.makeUnique( o.name )
+		if  uniqueName is not 0:
+			self.generatedObjects[uniqueName] = o
+		elif self.verbose:
+			print( "Impossible to create a unique name for ", o.name )
+		return uniqueName
+
 
 	def createPlane( self, x=0, y=0, z=0, time2live=0 ):
 		if self.template_plane is 0:
@@ -280,8 +307,9 @@ class ProcessingBGE(object):
 			return 0
 		obj = self.scene.addObject( self.template_plane, self.root, time2live )
 		self.move( obj, x,y,z )
+		uname = self.storeGeneratedRef( obj )
 		if self.verbose:
-			print( "New plane successfully created." )
+			print( "New plane named ", uname," successfully created." )
 		return obj
 
 	def createCube( self, x=0, y=0, z=0, time2live=0 ):
@@ -291,8 +319,9 @@ class ProcessingBGE(object):
 			return 0
 		obj = self.scene.addObject( self.template_cube, self.root, time2live )
 		self.move( obj, x,y,z )
+		uname = self.storeGeneratedRef( obj )
 		if self.verbose:
-			print( "New cube successfully created." )
+			print( "New cube named ", uname," successfully created." )
 		return obj
 
 
@@ -305,6 +334,7 @@ class ProcessingBGE(object):
 		self.move( obj, x,y,z )
 		if self.verbose:
 			print( "New sphere successfully created." )
+		self.storeGeneratedRef( obj )
 		return obj
 
 
@@ -317,6 +347,7 @@ class ProcessingBGE(object):
 		self.move( obj, x,y,z )
 		if self.verbose:
 			print( "New empty successfully created." )
+		self.storeGeneratedRef( obj )
 		return obj
 
 	def createSpot( self, x=0, y=0, z=0, time2live=0 ):
@@ -328,6 +359,7 @@ class ProcessingBGE(object):
 		self.move( obj, x,y,z )
 		if self.verbose:
 			print( "New spot successfully created." )
+		self.storeGeneratedRef( obj )
 		return obj
 
 	def createCylinder( self, x=0, y=0, z=0, time2live=0 ):
@@ -339,6 +371,7 @@ class ProcessingBGE(object):
 		self.move( obj, x,y,z )
 		if self.verbose:
 			print( "New cylinder successfully created." )
+		self.storeGeneratedRef( obj )
 		return obj
 
 	def createFromTemplate( self, name, x=0, y=0, z=0, time2live=0 ):
@@ -353,6 +386,7 @@ class ProcessingBGE(object):
 		self.move( obj, x,y,z )
 		if self.verbose:
 			print( "New", name,"successfully created." )
+		self.storeGeneratedRef( obj )
 		return obj
 
 	# convenient way to create colors, always return a RGBA color (a veector with 4 positions)
@@ -381,7 +415,7 @@ class ProcessingBGE(object):
 	
 	def getColor( self, o ):
 		if type( o ) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 			if obj is not 0:
 				return obj.color * 255
 			else:	
@@ -400,7 +434,7 @@ class ProcessingBGE(object):
 	def orientation( self, o, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -409,7 +443,7 @@ class ProcessingBGE(object):
 	def position( self, o, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -419,7 +453,7 @@ class ProcessingBGE(object):
 	def dimension( self, o ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -506,7 +540,7 @@ class ProcessingBGE(object):
 
 		elif type( arg1 ) is bge.types.KX_GameObject or type( arg1 ) is str:
 			if type( arg1 ) is str:
-				arg1 = self.getObjByName( arg1 )
+				arg1 = self.getObjectByName( arg1 )
 			if arg1 is not 0:
 				o = self.getPosition( arg1 )
 				x = o.x
@@ -625,7 +659,7 @@ class ProcessingBGE(object):
 		if type( arg1 ) is mathutils.Vector:
 			v1 = arg1
 		elif type( arg1 ) is str:
-			o = self.getObjByName( arg1 )
+			o = self.getObjectByName( arg1 )
 			if o is not 0:
 				v1 = self.getPosition( o )
 		elif type( arg1 ) is bge.types.KX_GameObject:
@@ -640,7 +674,7 @@ class ProcessingBGE(object):
 		if type( arg2 ) is mathutils.Vector:
 			v2 = arg2
 		elif type( arg2 ) is str:
-			o = self.getObjByName( arg2 )
+			o = self.getObjectByName( arg2 )
 			if o is not 0:
 				v2 = self.getPosition( o )
 		elif type( arg2 ) is bge.types.KX_GameObject:
@@ -677,7 +711,7 @@ class ProcessingBGE(object):
 	def changeColor( self, o, red=255, green=255, blue=255, alpha=255 ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -694,7 +728,7 @@ class ProcessingBGE(object):
 	def scale( self, o, value, optY="NONE", optZ="NONE" ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if optY == "NONE":
@@ -710,7 +744,7 @@ class ProcessingBGE(object):
 	def scaleX( self, o, value ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -720,7 +754,7 @@ class ProcessingBGE(object):
 	def scaleY( self, o, value ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -730,7 +764,7 @@ class ProcessingBGE(object):
 	def scaleZ( self, o, value ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -742,11 +776,11 @@ class ProcessingBGE(object):
 	def moveTo( self, o, arg1, y="NONE", z="NONE" ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0 and ( y == "NONE" or z == "NONE" ):
-			obj2 = self.getObjByName( arg1 )
+			obj2 = self.getObjectByName( arg1 )
 			if obj2 is not 0:
 				vt = self.getPosition( obj )			
 				vs = self.getPosition( obj2 )
@@ -763,7 +797,7 @@ class ProcessingBGE(object):
 	def move( self, o, x=0, y=0, z=0, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -776,7 +810,7 @@ class ProcessingBGE(object):
 	def moveX( self, o, value, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -786,7 +820,7 @@ class ProcessingBGE(object):
 	def moveY( self, o, value, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -796,7 +830,7 @@ class ProcessingBGE(object):
 	def moveZ( self, o, value, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -808,7 +842,7 @@ class ProcessingBGE(object):
 	def orient( self, o, neworientation  ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -818,12 +852,12 @@ class ProcessingBGE(object):
 	def pointTo( self, o, tracked ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		ot = 0
 		if type(tracked) is str:
-			ot = self.getObjByName( tracked )
+			ot = self.getObjectByName( tracked )
 		else:
 			ot = o
 		if obj is not 0 and ot is not 0:
@@ -860,7 +894,7 @@ class ProcessingBGE(object):
 	def point( self, o, x=0, y=0, z=0 ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -900,7 +934,7 @@ class ProcessingBGE(object):
 	def rotateX( self, o, value, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -911,7 +945,7 @@ class ProcessingBGE(object):
 	def rotateY( self, o, value, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -922,7 +956,7 @@ class ProcessingBGE(object):
 	def rotateZ( self, o, value, absolute=True ):
 		obj = 0
 		if type(o) is str:
-			obj = self.getObjByName( o )
+			obj = self.getObjectByName( o )
 		else:
 			obj = o
 		if obj is not 0:
@@ -1000,10 +1034,24 @@ class ProcessingBGE(object):
 		else:
 			return obj.localOrientation
 
-	def getResourceByName( self, name ):
-		return self.resources.objects[name]
+	def getGeneratedByName( self, name ):
+		obj = 0
+		try:
+			obj = self.generatedObjects[name]
+		except KeyError:
+			obj = 0
+		return obj
 
-	def getObjByName( self, name ):
+	def getObjectName( self, o ):
+		for k in self.generatedObjects.keys():
+			if o is self.generatedObjects[k]:
+				return k
+		for k in self.scene.objects.keys():
+			if o is self.scene.objects[k]:
+				return k
+		return 0
+
+	def getObjectByName( self, name ):
 		obj = 0
 		try:
 			obj = self.scene.objects[ name ]
