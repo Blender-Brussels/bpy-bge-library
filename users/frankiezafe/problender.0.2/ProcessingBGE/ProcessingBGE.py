@@ -137,7 +137,6 @@ class ProcessingBGE(object):
 						print( "acturator '", a, "' has no object defined" )
 					continue
 				oname = a.object.name
-				print ( "KX_SCA_AddObjectActuator:", oname )
 				if oname == 'template_cube':
 					self.template_cube = a.object
 				elif oname == 'template_cylinder':
