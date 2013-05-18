@@ -98,6 +98,9 @@ class ProcessingBGE(object):
 		self.template_plane = 0
 		self.template_sphere = 0
 		self.template_spot = 0
+		self.template_2D_circle = 0
+		self.template_2D_square = 0
+		self.template_2D_triangle = 0
 		self.templates = {}
 		self.generatedObjects = {}
 		self.locateTemplates()
@@ -134,6 +137,7 @@ class ProcessingBGE(object):
 						print( "acturator '", a, "' has no object defined" )
 					continue
 				oname = a.object.name
+				print ( "KX_SCA_AddObjectActuator:", oname )
 				if oname == 'template_cube':
 					self.template_cube = a.object
 				elif oname == 'template_cylinder':
@@ -146,6 +150,12 @@ class ProcessingBGE(object):
 					self.template_sphere = a.object
 				elif oname == 'template_spot':
 					self.template_spot = a.object
+				elif oname == 'template_2D_circle':
+					self.template_2D_circle = a.object
+				elif oname == 'template_2D_square':
+					self.template_2D_square = a.object
+				elif oname == 'template_2D_triangle':
+					self.template_2D_triangle = a.object
 				else:
 					self.templates[oname] = a.object					
 
@@ -175,6 +185,18 @@ class ProcessingBGE(object):
 				print( "\tCan not locate 'template_spot' object" )
 			else:
 				print( "\t'template_spot' loaded" )
+			if self.template_2D_circle is 0:
+				print( "\tCan not locate 'template_2D_circle' object" )
+			else:
+				print( "\t'template_2D_circle' loaded" )
+			if self.template_2D_square is 0:
+				print( "\tCan not locate 'template_2D_square' object" )
+			else:
+				print( "\t'template_2D_square' loaded" )
+			if self.template_2D_triangle is 0:
+				print( "\tCan not locate 'template_2D_triangle' object" )
+			else:
+				print( "\t'template_2D_triangle' loaded" )
 			print( "Users templates:" )
 			for t in self.templates.keys():
 				print( "\t'", self.templates[t] ,"' loaded" )
@@ -299,6 +321,7 @@ class ProcessingBGE(object):
 			print( "Impossible to create a unique name for ", o.name )
 		return uniqueName
 
+	# 3D OBJECTS
 
 	def createPlane( self, x=0, y=0, z=0, time2live=0 ):
 		if self.template_plane is 0:
@@ -371,6 +394,44 @@ class ProcessingBGE(object):
 		self.move( obj, x,y,z )
 		if self.verbose:
 			print( "New cylinder successfully created." )
+		self.storeGeneratedRef( obj )
+		return obj
+
+	# 2D OBJECTS
+
+	def createCircle( self, x=0, y=0, z=0, time2live=0 ):
+		if self.template_2D_circle is 0:
+			if self.verbose:
+				print( "No circle template available." )
+			return 0
+		obj = self.scene.addObject( self.template_2D_circle, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New circle successfully created." )
+		self.storeGeneratedRef( obj )
+		return obj
+
+	def createSquare( self, x=0, y=0, z=0, time2live=0 ):
+		if self.template_2D_square is 0:
+			if self.verbose:
+				print( "No square template available." )
+			return 0
+		obj = self.scene.addObject( self.template_2D_square, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New square successfully created." )
+		self.storeGeneratedRef( obj )
+		return obj
+
+	def createTriangle( self, x=0, y=0, z=0, time2live=0 ):
+		if self.template_2D_triangle is 0:
+			if self.verbose:
+				print( "No triangle template available." )
+			return 0
+		obj = self.scene.addObject( self.template_2D_triangle, self.root, time2live )
+		self.move( obj, x,y,z )
+		if self.verbose:
+			print( "New triangle successfully created." )
 		self.storeGeneratedRef( obj )
 		return obj
 
