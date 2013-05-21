@@ -19,7 +19,7 @@ import bgl
 import blf
 
 # external libs
-import ProcessingBGE.OSC as lib_osc
+import ProcessingBGE.ProcessingOSC as posc
 
 #TODO's
 # implement rasterizer!!! http://www.blender.org/documentation/blender_python_api_2_65_5/bge.render.html
@@ -66,8 +66,7 @@ class ProcessingBGE(object):
 		for key in self.input_keyboard.events.keys():
 			self.input_keyboardEvents[key] = self.input_keyboard.events[key]
 		# OSC
-		self.osc_clients = {}
-		self.osc_servers = {}
+		self.osc_manager = posc.ProcessingOSC.getInstance()
 		# commodities
 		self.PI = math.pi
 		self.HALF_PI = math.pi * 0.5
@@ -83,7 +82,7 @@ class ProcessingBGE(object):
 ####### configure
 	
 	def configure( self, verbose=True ):
-	
+
 		if self.configured:
 			return
 	
@@ -197,6 +196,8 @@ class ProcessingBGE(object):
 			else:
 				print( "\t'template_2D_triangle' loaded" )
 			print( "Users templates:" )
+			if len( self.templates.keys() ) == 0:
+				print( "\t", "none" )
 			for t in self.templates.keys():
 				print( "\t'", self.templates[t] ,"' loaded" )
 		
@@ -925,6 +926,7 @@ class ProcessingBGE(object):
 			vec2 = self.getPosition( ot, True )
 			vec = mathutils.Vector( ( vec2.x - vec1.x, vec2.y - vec1.y, vec2.z - vec1.z ) )			
 			vec.normalize()
+			print( vec )
 			# getting angles, via thierry ravet, my math master
 			theta = math.atan( math.sqrt( (vec.x * vec.x) + (vec.y * vec.y) ) / vec.z )
 			phi = math.atan( (vec.y * vec.y) / vec.x )
