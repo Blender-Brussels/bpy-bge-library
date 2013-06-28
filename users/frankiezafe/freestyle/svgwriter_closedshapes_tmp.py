@@ -19,12 +19,6 @@ _PATH = """\
 _CLOSED_PATH = """\
 <path fill="none" stroke="none" style="fill:%s" stroke-width="%d" d="M %s z" />
 """
-_GROUP_START = """\
-<g>
-"""
-_GROUP_END = """\
-</g>
-"""
 _FOOTER = """\
 </svg>
 """
@@ -35,25 +29,60 @@ class SVGWriter(StrokeShader):
 		self.width, self.height = w, h
 		self.file = f
 		self.file.write(_HEADER % (w, h))
-		self.groupcounter = 0
 
 	def close(self):
-		while self.groupcounter > 0:
-			self.endgroup()
-			self.groupcounter -= 1
 		self.file.write(_FOOTER)
 		self.file.close()
-
-	def startgroup( self ):
-		self.file.write( _GROUP_START )
-		self.groupcounter += 1
-
-	def endgroup( self ):
-		self.file.write( _GROUP_END )
-		self.groupcounter -= 1
+	
+	# WARNING!!! copy/paste from parameter_editor.py, line 367 - 397
+	def iter_material_value( self, stroke, material_attribute ):
+		func = CurveMaterialF0D()
+		it = stroke.stroke_vertices_begin()
+		while not it.is_end:
+			material = func(Interface0DIterator(it))
+			if material_attribute == 'DIFF':
+				r, g, b = material.diffuse[0:3]
+				t = 0.35 * r + 0.45 * r + 0.2 * b
+			elif material_attribute == 'DIFF_R':
+				t = material.diffuse[0]
+			elif material_attribute == 'DIFF_G':
+				t = material.diffuse[1]
+			elif material_attribute == 'DIFF_B':
+				t = material.diffuse[2]
+			elif material_attribute == 'SPEC':
+				r, g, b = material.specular[0:3]
+				t = 0.35 * r + 0.45 * r + 0.2 * b
+			elif material_attribute == 'SPEC_R':
+				t = material.specular[0]
+			elif material_attribute == 'SPEC_G':
+				t = material.specular[1]
+			elif material_attribute == 'SPEC_B':
+				t = material.specular[2]
+			elif material_attribute == 'SPEC_HARDNESS':
+				t = material.shininess
+			elif material_attribute == 'ALPHA':
+				t = material.diffuse[3]
+			elif material_attribute == 'TEXTURES':
+				t = material
+			else:
+				raise ValueError("unexpected material attribute: " + material_attribute)
+			yield it, t
+			it.increment()
 
 	def shade(self, stroke):
 		points = []
+
+		'''
+		func = MaterialF0D()
+		it = stroke.stroke_vertices_begin()
+		while not it.is_end:
+			mat = func(Interface0DIterator(it))
+			print( mat.use_transparency )
+			it.increment()
+		'''
+
+		for it, t in self.iter_material_value(stroke, 'TEXTURES' ):
+			print( t, type(t) )
 
 		stroken = len(stroke)
 		fx = 0 
@@ -69,6 +98,7 @@ class SVGWriter(StrokeShader):
 					fx, fy = v.point
 				elif vi == stroken - 1:
 					lx, ly = v.point
+				print( v.nature )
 				vi += 1
 			if fx == lx and fy == ly:
 				closed = True
@@ -79,6 +109,7 @@ class SVGWriter(StrokeShader):
 
 		points = " ".join(points)
 		r, g, b = v.attribute.color * 255
+		# mat = func(Interface0DIterator(it))
 		color = "#%02x%02x%02x" % (r, g, b)
 		width = v.attribute.thickness
 		width = width[0] + width[1]
@@ -102,7 +133,6 @@ upred = QuantitativeInvisibilityUP1D(0)
 Operators.select(upred)
 Operators.bidirectional_chain(ChainSilhouetteIterator(), NotUP1D(upred))
 writer = SVGWriter(f, w, h)
-writer.startgroup()
 shaders_list = [
 	ConstantThicknessShader(2),
 	pyDepthDiscontinuityThicknessShader(1, 4),
