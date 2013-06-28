@@ -1,0 +1,2 @@
+NiMate, to check:
+http://www.ni-mate.com/wp-content/uploads/nimate-downloads/plugins/blender/v10/animation_delicode_ni_mate_tools.py
