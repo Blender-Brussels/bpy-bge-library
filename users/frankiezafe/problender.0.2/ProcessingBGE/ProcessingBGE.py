@@ -208,6 +208,8 @@ class ProcessingBGE(object):
 		if self.configured == False:
 			print( "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nThere is a huge problem in the init script!\nCall 'configure()' to start correctly ProcessingBlender\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" )
 			return False
+		# updating osc manager to gather new osc messages
+		self.osc_manager.update()
 		# update width and height size
 		self.width = bge.render.getWindowWidth()
 		self.height = bge.render.getWindowHeight()
@@ -542,11 +544,17 @@ class ProcessingBGE(object):
 ####### delegates
 #################
 
+# vector
+
 	def vector( self, x = "NONE", y = "NONE", z = "NONE" ):
 		if x != "NONE" and y != "NONE" and z != "NONE":
 			return mathutils.Vector( ( x,y,z ) )
 		else:
 			return mathutils.Vector()
+
+# osc
+	def createOscReceiver( self, port=0, marker="/pbge" ):
+		self.osc_manager.createOscReceiver( port,marker )
 
 ############
 ####### text
