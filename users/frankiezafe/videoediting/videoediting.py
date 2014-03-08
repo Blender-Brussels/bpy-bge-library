@@ -1,25 +1,31 @@
 import bpy
 import os
 
-framecount = 100
+resx = 200;
+resy = 200;
 
-resx = 500; #1920 
-resy = 500; #1080
+animation_folder = "//anim/"
 
-title_width = 502
-title_height = 338
+background_folder = "//"
+background_video = "capture.avi"
+background_video_width = 640
+background_video_height = 480
 
-video_width = 640
-video_height = 480
+filter_brightness = 10
+filter_contrast = 101
+filter_color = ( 1,0,1 )
+
+output_folder = "//output/"
+output_format = "TIFF"
 
 def createTransform( name, start, end ):
     bpy.ops.sequencer.effect_strip_add( frame_start=start, frame_end=end, type='TRANSFORM' )
     bpy.context.scene.sequence_editor.sequences_all["Transform"].name = name
 
-def createColor( name, start, end, r, g, b ):
+def createColor( name, start, end, color ):
     bpy.ops.sequencer.effect_strip_add( frame_start=start, frame_end=end, type='COLOR' )
     bpy.context.scene.sequence_editor.sequences_all["Color"].name = name
-    bpy.context.scene.sequence_editor.sequences_all[name].color = (r,g,b)
+    bpy.context.scene.sequence_editor.sequences_all[name].color = color
 
 def loadImageSequence( name, start, directory ):
     candidates = []
@@ -37,41 +43,43 @@ def loadImageSequence( name, start, directory ):
     bpy.context.scene.sequence_editor.sequences_all[ file[ 0 ][ "name" ] ].name = name
     return start+n
 
-def loadBackground( directory, video ):
+def loadBackground( directory, video, vwith, vheight ):
     bpy.ops.sequencer.movie_strip_add( 
             filepath=directory,
-            files=[{ "name": video }]
-            relative_path=True,
+            files=[{ "name": video }],
             sound=False )
-    bpy.context.scene.sequence_editor.sequences_all["capture.avi"].mute = True
+    bpy.context.scene.sequence_editor.sequences_all[ video ].mute = True
     createTransform( "background_transform", 0, 25 )
-    bpy.context.scene.sequence_editor.sequences_all["background_transform"].scale_start_x = 1
-    bpy.context.scene.sequence_editor.sequences_all["background_transform"].scale_start_y = (video_height / video_width) / ( resy / resx )
+    ratioscene = resy / resx
+    ratiovideo = vheight / vwith
+    if ( ratioscene < ratiovideo ):
+        bpy.context.scene.sequence_editor.sequences_all["background_transform"].scale_start_y = ( vheight / vwith ) / ( resy / resx )
+    else:
+        bpy.context.scene.sequence_editor.sequences_all["background_transform"].scale_start_x = ( vwith / vheight ) / ( resx / resy )
 
 bpy.data.scenes["Scene"].render.resolution_x = resx 
 bpy.data.scenes["Scene"].render.resolution_y = resy 
 bpy.data.scenes["Scene"].render.resolution_percentage = 100 
 
-loadBackground( "//", "capture.avi" )
+loadBackground( background_folder, background_video, background_video_width, background_video_height )
 
-#createColor( "rouge", 0, 250, 1, 0, 0 )
-framecount = loadImageSequence( "escargot", 0, "//anim" )
+framecount = loadImageSequence( "animation", 0, "//anim/" )
 bpy.ops.sequencer.strip_modifier_add( type='BRIGHT_CONTRAST' )
-bpy.context.scene.sequence_editor.sequences_all[ "escargot" ].modifiers["Bright/Contrast"].bright = 10
-bpy.context.scene.sequence_editor.sequences_all[ "escargot" ].modifiers["Bright/Contrast"].contrast = 101
+bpy.context.scene.sequence_editor.sequences_all[ "animation" ].modifiers["Bright/Contrast"].bright = filter_brightness
+bpy.context.scene.sequence_editor.sequences_all[ "animation" ].modifiers["Bright/Contrast"].contrast = filter_contrast
 
-bpy.context.scene.sequence_editor.sequences_all[ "escargot" ].mute = True
-createColor( "rouge", 0, framecount, 1,0,0 )
+bpy.context.scene.sequence_editor.sequences_all[ "animation" ].mute = True
+createColor( "color", 0, framecount, filter_color )
 bpy.ops.sequencer.strip_modifier_add( type='MASK' )
-bpy.context.scene.sequence_editor.sequences_all[ "rouge" ].modifiers["Mask"].input_mask_strip = bpy.context.scene.sequence_editor.sequences_all[ "escargot" ]
-bpy.context.scene.sequence_editor.sequences_all[ "rouge" ].blend_type = 'ALPHA_OVER'
+bpy.context.scene.sequence_editor.sequences_all[ "color" ].modifiers["Mask"].input_mask_strip = bpy.context.scene.sequence_editor.sequences_all[ "animation" ]
+bpy.context.scene.sequence_editor.sequences_all[ "color" ].blend_type = 'ALPHA_OVER'
 
 
 bpy.data.scenes["Scene"].frame_start = 0
 bpy.data.scenes["Scene"].frame_end = framecount-1
 
-bpy.data.scenes["Scene"].render.filepath = "//output/"
-bpy.data.scenes["Scene"].render.image_settings.file_format = 'TIFF'
+bpy.data.scenes["Scene"].render.filepath = output_folder
+bpy.data.scenes["Scene"].render.image_settings.file_format = output_format
 bpy.ops.render.render( animation=True ) 
 
 '''
