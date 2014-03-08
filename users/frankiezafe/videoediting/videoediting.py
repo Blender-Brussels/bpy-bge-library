@@ -1,3 +1,11 @@
+###################################################################
+# this script 
+# 1. loads a video file and scale it (keeping the  aspect ratio)
+# 2. loads a list of image into the sequencer
+# 3. use them as a mask on a plain color layer
+# 4. launch the video rendering (here configure as a TIFF sequence) 
+###################################################################
+
 import bpy
 import os
 
