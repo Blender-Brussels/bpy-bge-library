@@ -5,4 +5,4 @@ Blender Lookback
 
 Workshop about scripting with the video sequencer.
 
-
+Participants: François, Sophie, André, Julien 
