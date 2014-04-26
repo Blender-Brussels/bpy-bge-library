@@ -1,0 +1,35 @@
+#N canvas 978 79 701 419 10;
+#X obj 14 12 bng 30 250 50 0 empty empty empty 17 7 0 10 -4034 -1 -1
+;
+#X obj 48 25 loadbang;
+#X obj 14 354 sendOSC;
+#X msg 14 99 connect 127.0.0.1 23000;
+#X obj 14 51 t b b;
+#X obj 245 128 hsl 250 20 -1 1 0 0 empty empty _Xrot -2 -8 0 10 -258113
+-1 -1 12450 1;
+#X obj 245 168 hsl 250 20 -1 1 0 0 empty empty _Yrot -2 -8 0 10 -4034
+-1 -1 12450 1;
+#X obj 245 208 hsl 250 20 -1 1 0 0 empty empty _Zrot -2 -8 0 10 -4160
+-1 -1 16950 1;
+#X msg 169 99 0;
+#X obj 142 264 pack \$1 \$2 \$3;
+#X obj 142 288 prepend send /control/rotation;
+#X obj 190 239 t b f;
+#X obj 152 209 t b f;
+#X connect 0 0 4 0;
+#X connect 1 0 4 0;
+#X connect 3 0 2 0;
+#X connect 4 0 3 0;
+#X connect 4 1 8 0;
+#X connect 5 0 9 0;
+#X connect 6 0 12 0;
+#X connect 7 0 11 0;
+#X connect 8 0 5 0;
+#X connect 8 0 6 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 10 0 2 0;
+#X connect 11 0 5 0;
+#X connect 11 1 9 2;
+#X connect 12 0 5 0;
+#X connect 12 1 9 1;
