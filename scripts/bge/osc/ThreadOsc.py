@@ -1,3 +1,42 @@
+'''
+-------------------------------------------------------------------------------
+Threaded OSC receiver for Python
+-------------------------------------------------------------------------------
+-----------------
+Original Comments
+-----------------
+> Open SoundControl for Python
+> Copyright (C) 2002 Daniel Holth, Clinton McChesney
+>
+> This library is free software; you can redistribute it and/or modify it under
+> the terms of the GNU Lesser General Public License as published by the Free
+> Software Foundation; either version 2.1 of the License, or (at your option) any
+> later version.
+>
+> This library is distributed in the hope that it will be useful, but WITHOUT ANY
+> WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+> PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+> details.
+> You should have received a copy of the GNU Lesser General Public License along
+> with this library; if not, write to the Free Software Foundation, Inc., 59
+> Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> For questions regarding this module contact Daniel Holth <dholth@stetson.edu>
+> or visit http://www.stetson.edu/~ProctoLogic/
+
+This code is based [pyOSC](https://trac.v2.nl/wiki/pyOSC).
+
+SimpleOSC:
+	Copyright (c) Daniel Holth & Clinton McChesney.
+pyOSC:
+	Copyright (c) 2008-2010, Artem Baguinski <artm@v2.nl> et al., Stock, V2_Lab, Rotterdam, Netherlands.
+Streaming support (OSC over TCP):
+	Copyright (c) 2010 Uli Franke <uli.franke@weiss.ch>, Weiss Engineering, Uster, Switzerland.
+Threading:
+	Copyright (c) 2014 Frankie Zafe <frankie@frankiezafe.org>, Belgium
+		
+-------------------------------------------------------------------------------
+'''
+
 import re
 import socket
 import select
@@ -15,7 +54,7 @@ import math
 import random
 from contextlib import closing
 
-##########################################OSC LIB
+##########################################OSC LIB - start
 
 global version
 version = ("0.3","6", "$Rev: 6382 $"[6:-2])
@@ -214,6 +253,8 @@ def hexDump(bytes):
     bytes_left = num % 16
     if bytes_left:
         print("%s: %s" % (line.ljust(54), repr(bytes[-bytes_left:])))
+
+##########################################OSC LIB - end
 
 class ThreadOsc( threading.Thread ):
     
