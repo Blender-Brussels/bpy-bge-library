@@ -1,4 +1,5 @@
 import bpy
+from mathutils import Vector
 import os
 import xml.etree.ElementTree as ET
 
@@ -107,6 +108,7 @@ def img2plane( folder, filename ):
     plane = bpy.context.scene.objects.active
     if plane.mode is not 'OBJECT':
         bpy.ops.object.mode_set(mode='OBJECT')
+    plane.location = (0,0,0)
     plane.dimensions = scalew, scaleh, 0.0
     plane.name = material.name
     bpy.ops.object.transform_apply(scale=True)
