@@ -15,4 +15,7 @@
     <slide>
         <video src="capture.avi" />
     </slide>
+    <slide>
+        <video src="0001-0100.avi" />
+    </slide>
 </presentation>
