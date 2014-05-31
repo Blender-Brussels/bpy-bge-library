@@ -91,12 +91,14 @@ def img2plane( folder, filename ):
     ratio = img.size[ 0 ] / img.size[ 1 ]
     #print( ratio )
     
-    scalew = 1
+    scalew = ratio
     scaleh = 1
+    '''
     if ratio > 1:
         scaleh = 1 / ratio
     else:
         scalew = 1 / ratio
+    '''
     
     texture = create_image_textures( bpy.context, img )
     material = create_material_for_texture( texture )
@@ -135,55 +137,55 @@ def video2plane( folder, filename ):
     prop.value = bpy.path.abspath( folder + filename )
     
     bpy.ops.logic.controller_add( type='PYTHON', name='py_init')
+    p.game.controllers['py_init'].text = bpy.data.texts["loadVideo.py"]
+
     bpy.ops.logic.controller_add( type='PYTHON', name='py_update')
+    p.game.controllers['py_update'].text = bpy.data.texts["updateVideo.py"]
 
     bpy.ops.logic.sensor_add( type='ALWAYS', name='init' )
+    p.game.sensors[ 'init' ].link( p.game.controllers['py_init'] )
+    
     bpy.ops.logic.sensor_add( type='ALWAYS', name='update' )
+    p.game.sensors[ 'update' ].link( p.game.controllers['py_update'] )
+    p.game.sensors[ 'update' ].use_pulse_true_level = True
     
     return p
 
-'''
-if "video_init" in bpy.data.texts:
-    del bpy.data.texts[ "video_init" ]
-
-if "video_update" in bpy.data.texts:
-    del bpy.data.texts[ "video_update" ]
-'''
-
 slides = []
 page = ET.parse( bpy.path.abspath( '//' + 'presentation.xml' ) )
+
+slideIndex = 0
 for p in page.getiterator():
     
     if p.tag == "img":
         print( "loading image: ", p.attrib["src"] )
-        slides.append( img2plane( "//", p.attrib["src"] ) )
+        s = img2plane( "//", p.attrib["src"] )
+        s.name = "slide_" + str( slideIndex )
+        slides.append( s )
+        slideIndex += 1
         
     if p.tag == "text":
         '''
-        print( "TEXT", p )
-        print( p.tag )
-        print( p.attrib )
+        in
         '''
         
     if p.tag == "video":
         print( "loading video: ", p.attrib["src"] )
-        slides.append( video2plane( "//", p.attrib["src"] ) )
-        '''
-        print( "VIDEO", p )
-        print( p.tag )
-        print( p.attrib )
-        '''
-
+        s = video2plane( "//", p.attrib["src"] )
+        s.name = "slide_" + str( slideIndex )
+        slides.append( s )
+        slideIndex += 1
+        
 # rearrange sildes
-i = 0
+offsetx = 0
 for s in slides:
     print( "moving", s.name )
     bpy.ops.object.select_all( action='DESELECT' )
     s.select = True
     if s.mode is not 'OBJECT':
         bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.ops.transform.translate( value = ( i * 2, 0, 0) )
-    i += 1
+    bpy.ops.transform.translate( value = ( offsetx * 2, 0, 0 ) )
+    offsetx += 1
     
 
 for i in bpy.data.images:
