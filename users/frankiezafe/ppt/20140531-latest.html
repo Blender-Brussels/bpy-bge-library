@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="en-us" />
+<title>/20140531</title>
+</head>
+<body><b>Eclipse &amp; python</b><br
+/>download eclipse: <a href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a><br
+/>install pydev module: <a href="http://pydev.org/download.html">http://pydev.org/download.html</a> (Help &gt; Install new software &gt; Add source )<br
+/>when creating the first project, use the option "auto configure python"<br
+/><br
+/>XML Python<br
+/><a href="https://docs.python.org/2/library/xml.etree.elementtree.html">https://docs.python.org/2/library/xml.etree.elementtree.html</a><br
+/><br
+/><a href="https://docs.python.org/2/library/xml.html">https://docs.python.org/2/library/xml.html</a><br
+/><br
+/><b>Proposition de xml</b><br
+/><br
+/>&lt;?xml version="1.0"?&gt;<br
+/>&lt;presentation&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;slide title="" &gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;img src="" /&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/slide&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;slide&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- Text has to be inside &lt;![CDATA][]&gt; to take into account carriage return, etc. --&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;![CDATA[Some text for the slide<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Une nouvelle ligne.]]&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/text&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/slide&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;slide&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;video src="" /&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/slide&gt;<br
+/>&lt;/presentation&gt;<br
+/><br
+/><b>Extrait de XML de LibreOffice (.fodp)</b><br
+/><br
+/>&lt;office:body&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;office:presentation&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;draw:page draw:name="page1"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;draw:frame draw:layer="layout" svg:width="25.199cm" svg:height="3.506cm" svg:x="1.4cm" svg:y="0.837cm" presentation:class="title"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;draw:text-box&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;text:p&gt;Titre&lt;/text:p&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/draw:text-box&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/draw:frame&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;draw:frame draw:layer="layout" svg:width="24.639cm" svg:height="12.178cm" svg:x="1.4cm" svg:y="4.914cm" presentation:class="subtitle"&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;draw:text-box&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;text:p&gt;Text&lt;/text:p&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/draw:text-box&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/draw:frame&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;presentation:notes draw:style-name="dp2"&gt;…&lt;/presentation:notes&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/draw:page&gt;<br
+/>file.readline()<br
+/>while line:<br
+/>mytext.write(line)<br
+/>line = file.readline()<br
+/>file.close()<br
+/><br
+/>XML LOADING IN BPY:<br
+/>****************************<br
+/>import bpyfile.readline()<br
+/>while line:<br
+/>mytext.write(line)<br
+/>line = file.readline()<br
+/>file.close()<br
+/>import xml.etree.ElementTree as ET<br
+/><br
+/>xml_file = bpy.path.abspath( '//' + 'presentation.xml' )<br
+/>xml_tree = ET.parse(xml_file)<br
+/><br
+/>print( xml_tree )<br
+/><br
+/>page = ET.parse( bpy.path.abspath( '//' + 'presentation.xml' ) )<br
+/>for p in page.getiterator():<br
+/>&nbsp;&nbsp;&nbsp; if p.tag == "img":<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( "IMAGE", p )<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( p.tag )<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( p.attrib )<br
+/>&nbsp;&nbsp;&nbsp; if p.tag == "text":<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( "TEXT", p )<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( p.tag )<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( p.attrib )<br
+/>&nbsp;&nbsp;&nbsp; if p.tag == "video":<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( "VIDEO", p )<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( p.tag )<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( p.attrib )<br
+/>*****************************<br
+/><br
+/><br
+/>Github<br
+/><a href="https://github.com/blender-brussels">https://github.com/blender-brussels</a><br
+/><br
+/><br
+/>Image2Plane -&gt; [fz] chargement d'une image, récupération de la taille et création d'une texture<br
+/><br
+/><br
+/>blender-2.70-linux-glibc211-x86_64/2.70/scripts/addons/io_import_images_as_planes.py&nbsp;<br
+/><br
+/>PYTHON<br
+/>******************************<br
+/><a href="https://github.com/Blender-Brussels/bpy-bge-library/blob/master/users/frankiezafe/ppt/image2plane.py">https://github.com/Blender-Brussels/bpy-bge-library/blob/master/users/frankiezafe/ppt/image2plane.py</a><br
+/>******************************<br
+/><br
+/>4 david &gt; <a href="https://github.com/frankiezafe/pbge/blob/master/dev/ProcessingBGE/ProcessingBGE.py">https://github.com/frankiezafe/pbge/blob/master/dev/ProcessingBGE/ProcessingBGE.py</a><br
+/><a href="http://www.blender.org/documentation/blender_python_api_2_62_1/bpy.types.Image.html#bpy.types.Image">http://www.blender.org/documentation/blender_python_api_2_62_1/bpy.types.Image.html#bpy.types.Image</a><br
+/><br
+/>David<br
+/>NB : Use UTF8 &amp; CDATA for carriage return&nbsp;<br
+/><br
+/>XML ---<br
+/>&lt;slideshow type="horizontal|vertical|circle|sphere"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;slide&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;media type="image" path="//img.png" /&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;content type="txt" color="1,0,0,1"&gt;&lt;![CDATA[This is my first slide]]&gt;&lt;/content&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/slide&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;slide&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;media type="video" path="//video.mp4" autoplay="1" loop="1" volume="0.5" /&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;content type="txt"&gt;&lt;![CDATA[This is my second slide]]&gt;&lt;/content&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/slide&gt;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; &lt;slide&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;content type="txt"&gt;&lt;![CDATA[This is my third éééé slide&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; carriage return]]&gt;&lt;/content&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/slide&gt;<br
+/>&lt;/slideshow&gt;<br
+/><br
+/>PYTHON---<br
+/><br
+/>import bge<br
+/>import xml.etree.ElementTree as ET<br
+/><br
+/>control = bge.logic.getCurrentController()<br
+/>owner = control.owner<br
+/>scene = bge.logic.getCurrentScene()<br
+/><br
+/>xml_file = bge.logic.expandPath('//' + 'slide.xml')<br
+/>tree = ET.parse(xml_file)<br
+/>root = tree.getroot()<br
+/><br
+/>owner['currentSlide'] = 0<br
+/><br
+/>def nextSlide():<br
+/>&nbsp;&nbsp;&nbsp; owner.text = root[owner['currentSlide']][0].text<br
+/><br
+/>def updateText():<br
+/>&nbsp;&nbsp;&nbsp; if not owner.sensors['Keyboard'].positive:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; if owner['currentSlide'] &lt; len(root):<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nextSlide()<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; owner['currentSlide'] += 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Create and name TextCurve object #1<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpy.ops.object.text_add(<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; location=(-3, 0, 3.6),<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rotation=(0, 0, 0))<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob = bpy.context.object<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.name = 'Text1'<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # TextCurve attributes<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.name = 'TextData'<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.body = p.text<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fnt = bpy.data.fonts.load('C:\\Windows\\Fonts\\Impact.ttf')<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.font = fnt<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.size = 2.75<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Inherited Curve attributes<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.bevel_depth = 0.1<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.bevel_resolution = 5<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.extrude = 0.5<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setMaterial(ob, red)<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpy.ops.object.convert(target='MESH', keep_original=False)<br
+/><br
+/><br
+/>file.readline()<br
+/>while line:<br
+/>mytext.write(line)<br
+/>line = file.readline()<br
+/>file.close()<br
+/>object must have a game property called 'vsource'<br
+/>loadMovie:<br
+/><br
+/>in gamelogic &gt; executed one time<br
+/>import VideoTexture<br
+/>from bge import logic as GameLogic<br
+/>contr = GameLogic.getCurrentController()<br
+/>obj = contr.owner<br
+/><br
+/>if not hasattr(GameLogic, 'video'):<br
+/><br
+/>&nbsp;matID = VideoTexture.materialID(obj, 'MAVideoMat')<br
+/>&nbsp;GameLogic.video = VideoTexture.Texture(obj)<br
+/>&nbsp;movie = GameLogic.expandPath('//'+obj['vsource'])<br
+/>&nbsp;print(movie)<br
+/>&nbsp;GameLogic.video.source = VideoTexture.VideoFFmpeg(movie)<br
+/>&nbsp;GameLogic.video.source.scale = True<br
+/>&nbsp;GameLogic.video.source.range=[0.1,20.0]<br
+/>&nbsp;GameLogic.video.source.play()<br
+/><br
+/><br
+/>refresh:<br
+/><br
+/>in gamelogic &gt; always<br
+/>from bge import logic as GameLogic<br
+/><br
+/>if hasattr(GameLogic, 'video'):<br
+/>&nbsp;&nbsp;&nbsp; GameLogic.video.refresh(True)<br
+/><br
+/>for i in bpy.data.images:<br
+/>&nbsp;&nbsp;&nbsp; print( i )<br
+/>for i in bpy.data.movieclips:<br
+/>&nbsp;&nbsp;&nbsp; print( i )<br
+/><br
+/>plane = bpy.context.scene.objects.active<br
+/><br
+/>&nbsp;ADD TEXTE FROM XML<br
+/>&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; if p.tag == "text":<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print( "TEXT", p )<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Create and name TextCurve object #1<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpy.ops.object.text_add(<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #location=(0, 0, 0),<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rotation=(0, 0, 0))<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob = bpy.context.object<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.name = 'Text1'<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # TextCurve attributes<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.name = 'TextData'<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.body = p.text<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #fnt = bpy.data.fonts.load('bpy.path.abspath( '//'+'')<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #ob.data.font = fnt<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.size = 1.0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Inherited Curve attributes<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.bevel_depth = 0.1<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.bevel_resolution = 5<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ob.data.extrude = 0.5<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #setMaterial(ob, red)<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bpy.ops.object.convert(target='MESH', keep_original=False)<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/><br
+/><br
+/><br
+/><br
+/></body>
+</html>
