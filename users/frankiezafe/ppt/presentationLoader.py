@@ -136,6 +136,10 @@ def video2plane( folder, filename ):
     prop = p.game.properties['video_path']
     prop.value = bpy.path.abspath( folder + filename )
     
+    bpy.ops.object.game_property_new( type='BOOL', name="play" )
+    prop = p.game.properties['play']
+    prop.value = False
+    
     bpy.ops.logic.controller_add( type='PYTHON', name='py_init')
     p.game.controllers['py_init'].text = bpy.data.texts["loadVideo.py"]
 
@@ -151,10 +155,10 @@ def video2plane( folder, filename ):
     
     return p
 
-def create_text( text, size = 0.5, bevel_depth = 0.1, bevel_resolution = 1, extrude = 0.1 ):
+def create_text( text, size = 0.2, bevel_depth = 0.1, bevel_resolution = 1, extrude = 0.1 ):
     # Create TextCurve object
     bpy.ops.object.text_add(
-        #location=(0, 0, 0),
+        location=(0, 0.5, 0),
         rotation=(0, 0, 0))
     ob = bpy.context.object
     #ob.name = 'Text1'
@@ -164,10 +168,11 @@ def create_text( text, size = 0.5, bevel_depth = 0.1, bevel_resolution = 1, extr
     #fnt = bpy.data.fonts.load('bpy.path.abspath( '//'+'')
     #ob.data.font = fnt
     ob.data.size = size
+    ob.data.align = 'CENTER'
     # Inherited Curve attributes
-    # ob.data.bevel_depth = bevel_depth
-    # ob.data.bevel_resolution = bevel_resolution
-    # ob.data.extrude = extrude
+    #ob.data.bevel_depth = bevel_depth
+    #ob.data.bevel_resolution = bevel_resolution
+    #ob.data.extrude = extrude
     #setMaterial(ob, red)
     bpy.ops.object.convert(target='MESH', keep_original=False)
     
@@ -211,7 +216,6 @@ for s in slides:
         bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.transform.translate( value = ( offsetx * 2, 0, 0 ) )
     offsetx += 1
-    
 
 for i in bpy.data.images:
     print( i )

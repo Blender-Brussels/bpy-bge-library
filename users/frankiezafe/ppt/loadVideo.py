@@ -22,4 +22,5 @@ if 'video' not in obj:
     obj['video'].source.repeat = -1 
 
     # -- play the video
-    obj['video'].source.play()
+    obj['video_was_playing'] = False
+    # obj['video'].source.play()
