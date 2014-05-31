@@ -11,6 +11,8 @@ from bpy.props import (StringProperty,
 
 from bpy_extras.image_utils import load_image
 
+# copy/paste and dirty hack of blender-2.70-linux-glibc211-x86_64/2.70/scripts/addons/io_import_images_as_planes.py 
+
 def set_texture_options( context, texture ):
     #texture.image.use_alpha = BoolProperty(name="Use Alpha", default=False, description="Use alphachannel for transparency")
     texture.image.use_alpha = False
