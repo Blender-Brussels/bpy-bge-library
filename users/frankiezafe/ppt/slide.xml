@@ -1,0 +1,14 @@
+<slideshow type="horizontal|vertical|circle|sphere">
+    <slide>
+        <media type="image" path="//img.png" />
+        <content type="txt" color="1,0,0,1"><![CDATA[This is my first slide]]></content>
+    </slide>
+    <slide>
+        <media type="video" path="//video.mp4" autoplay="1" loop="1" volume="0.5" />
+        <content type="txt"><![CDATA[This is my second slide]]></content>
+    </slide>    
+    <slide>
+        <content type="txt"><![CDATA[This is my third éééé slide 
+     carriage return]]></content>
+    </slide>    
+</slideshow>

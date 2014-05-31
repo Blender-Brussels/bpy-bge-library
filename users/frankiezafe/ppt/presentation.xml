@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<presentation>
+    <slide>
+        <img src="grindcore.jpg" />
+    </slide>
+    <slide>
+        <img src="surf_wide.jpg" />
+    </slide>
+    <slide>
+        <text>
+        <![CDATA[Some text for the slide
+        Une nouvelle ligne.]]>
+        </text>
+    </slide>
+    <slide>
+        <video src="capture.avi" />
+    </slide>
+</presentation>
