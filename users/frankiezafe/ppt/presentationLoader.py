@@ -153,11 +153,16 @@ def video2plane( folder, filename ):
 
 slides = []
 page = ET.parse( bpy.path.abspath( '//' + 'presentation.xml' ) )
+
+slideIndex = 0
 for p in page.getiterator():
     
     if p.tag == "img":
         print( "loading image: ", p.attrib["src"] )
-        slides.append( img2plane( "//", p.attrib["src"] ) )
+        s = img2plane( "//", p.attrib["src"] )
+        s.name = "slide_" + slideIndex
+        slides.append( s )
+        slideIndex += 1
         
     if p.tag == "text":
         '''
@@ -166,8 +171,11 @@ for p in page.getiterator():
         
     if p.tag == "video":
         print( "loading video: ", p.attrib["src"] )
-        slides.append( video2plane( "//", p.attrib["src"] ) )
-
+        s = video2plane( "//", p.attrib["src"] )
+        s.name = "slide_" + slideIndex
+        slides.append( s )
+        slideIndex += 1
+        
 # rearrange sildes
 offsetx = 0
 for s in slides:
