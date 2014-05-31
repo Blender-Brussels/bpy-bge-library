@@ -151,6 +151,29 @@ def video2plane( folder, filename ):
     
     return p
 
+def create_text( text, size = 0.5, bevel_depth = 0.1, bevel_resolution = 1, extrude = 0.1 ):
+    # Create TextCurve object
+    bpy.ops.object.text_add(
+        #location=(0, 0, 0),
+        rotation=(0, 0, 0))
+    ob = bpy.context.object
+    #ob.name = 'Text1'
+    # TextCurve attributes
+    ob.data.name = 'TextData'
+    ob.data.body = text
+    #fnt = bpy.data.fonts.load('bpy.path.abspath( '//'+'')
+    #ob.data.font = fnt
+    ob.data.size = size
+    # Inherited Curve attributes
+    # ob.data.bevel_depth = bevel_depth
+    # ob.data.bevel_resolution = bevel_resolution
+    # ob.data.extrude = extrude
+    #setMaterial(ob, red)
+    bpy.ops.object.convert(target='MESH', keep_original=False)
+    
+    return ob
+    
+    
 slides = []
 page = ET.parse( bpy.path.abspath( '//' + 'presentation.xml' ) )
 
@@ -165,10 +188,12 @@ for p in page.getiterator():
         slideIndex += 1
         
     if p.tag == "text":
-        '''
-        in
-        '''
-        
+        print( "loading text: ", p )
+        s = create_text( p.text )
+        s.name = "slide_" + str( slideIndex )
+        slides.append( s )
+        slideIndex += 1
+ 
     if p.tag == "video":
         print( "loading video: ", p.attrib["src"] )
         s = video2plane( "//", p.attrib["src"] )
