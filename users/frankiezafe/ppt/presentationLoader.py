@@ -160,7 +160,7 @@ for p in page.getiterator():
     if p.tag == "img":
         print( "loading image: ", p.attrib["src"] )
         s = img2plane( "//", p.attrib["src"] )
-        s.name = "slide_" + slideIndex
+        s.name = "slide_" + str( slideIndex )
         slides.append( s )
         slideIndex += 1
         
@@ -172,7 +172,7 @@ for p in page.getiterator():
     if p.tag == "video":
         print( "loading video: ", p.attrib["src"] )
         s = video2plane( "//", p.attrib["src"] )
-        s.name = "slide_" + slideIndex
+        s.name = "slide_" + str( slideIndex )
         slides.append( s )
         slideIndex += 1
         
