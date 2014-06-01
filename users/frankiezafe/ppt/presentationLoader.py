@@ -83,7 +83,7 @@ def img2plane( folder, filename ):
         f = load_image( bpy.path.abspath( folder + filename ) )
     
     if filename not in bpy.data.images:
-        print( "filename:", filename, "NOT FOUND!" )
+        print( "filename:", folder + filename, "NOT FOUND!" )
         return
     
     img = bpy.data.images[ filename ]
@@ -180,16 +180,25 @@ def create_text( text, size = 0.2, bevel_depth = 0.1, bevel_resolution = 1, extr
     
     return ob
     
-    
+def preparePath( src ):
+    lastslash = src.rfind("/")
+    folder = "//"
+    filename = p.attrib["src"]
+    if lastslash > -1:
+        folder = "//" + src[ 0:lastslash+1 ]
+        filename = filename[ lastslash+1: ]
+    return folder, filename
+  
 slides = []
-page = ET.parse( bpy.path.abspath( '//' + 'presentation.xml' ) )
+page = ET.parse( bpy.path.abspath( '//' + 'assets.xml' ) )
 
 slideIndex = 0
 for p in page.getiterator():
     
     if p.tag == "img":
         print( "loading image: ", p.attrib["src"] )
-        s = img2plane( "//", p.attrib["src"] )
+        d, f = preparePath( p.attrib["src"] )
+        s = img2plane( d, f )
         s.name = "slide_" + str( slideIndex )
         slides.append( s )
         slideIndex += 1
