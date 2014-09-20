@@ -1,0 +1,10 @@
+Screenshot: makehuman_screenshot01
+One factor to take into account whilst exporting MakeHuman Files for Blender
+- Pose-animate-skeleton --> choose the basic.json skeleton in order to be able to animate your character in Blender. You are adding the bones to the model!
+Export your character as Blender exchange (mhx)
+
+Screenshots: import_makehuman_blender
+To be able to import these Blender exchange (mhx) files, you need to activate the correct addon
+
+Screenshots: BlenderHuman
+Some images of Blender and the character
