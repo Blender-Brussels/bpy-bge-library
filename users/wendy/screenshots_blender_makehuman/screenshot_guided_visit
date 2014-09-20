@@ -8,3 +8,9 @@ To be able to import these Blender exchange (mhx) files, you need to activate th
 
 Screenshots: BlenderHuman
 Some images of Blender and the character
+
+Mesh smoothing (in blender, can be don in meshlab also)
+- select the mesh
+- go to properties panel and select "modifiers" (the blue key)
+- add a modifier "Subdivision surface", if not already there
+- adapt "method" & "view" params
