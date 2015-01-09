@@ -2,7 +2,7 @@ import bpy, os, random
 import math
 import mathutils
 
-pointnum = 3
+pointnum = 30
 size = 1
 
 me = bpy.data.meshes.new('circle')
@@ -35,6 +35,11 @@ if pointnum > 2:
     if pointnum > 4:
         v = mathutils.Vector(( 0,0,0 ))
         verts.append( v )
+        for i in range( 0, pointnum ):
+            j = i + 1
+            if j >= pointnum:
+                j -= pointnum
+            faces.append( [ pointnum,i,j ] )
         
 
 me.from_pydata( verts, [], faces )
