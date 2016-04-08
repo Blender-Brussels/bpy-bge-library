@@ -1,6 +1,6 @@
 import bpy
 
-# name of the armature and the related mesh
+# name of the armature
 ARMATURE_NAME = 'armature_skeleton'
 NAME_FILTER = 'spine'
 
