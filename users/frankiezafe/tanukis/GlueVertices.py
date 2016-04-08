@@ -5,7 +5,7 @@ from bpy import context
 from math import sqrt
 from mathutils import Vector
 
-# BEFORE launching script, SELECT the vertices to test
+# BEFORE launching script, SELECT the vertices form the region to test ( EDIT MODE, point select, rectangular selection for instance )
 
 # config
 TOLERANCE = 0.00001
