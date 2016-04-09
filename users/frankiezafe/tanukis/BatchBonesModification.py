@@ -2,15 +2,18 @@ import bpy
 
 # name of the armature
 ARMATURE_NAME = 'armature_skeleton'
-NAME_FILTER = 'spine'
+NAME_FILTER = [ '_body' ] # AND clause
 
 def doContinue( name ):
     global NAME_FILTER
-    if NAME_FILTER == '':
+    if len(NAME_FILTER) == 0:
         return True
-    if name.find( NAME_FILTER ) != -1:
-        return True
-    return False
+    allchecked = True
+    for n in NAME_FILTER:
+        if name.find( n ) == -1:
+            allchecked = False
+            break
+    return allchecked
 
 scn = bpy.context.scene
 armature = scn.objects[ ARMATURE_NAME ]
